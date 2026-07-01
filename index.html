@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Моя библиотека</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Библиотека">
+<meta name="theme-color" content="#efe6d5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#efe6d5; --bg2:#e6dac3; --paper:#fbf5e9; --paper2:#f6eeddff;
+    --ink:#2c241d; --ink2:#4a4036; --muted:#9a8b73;
+    --line:#e0d3b9; --line2:#d3c09f;
+    --accent:#883b30; --accent2:#a5544a; --gold:#a9852f; --gold2:#c6a54e;
+    --radius:14px;
+    --serif-d:'Playfair Display','Georgia',serif;
+    --serif-b:'EB Garamond','Georgia','Times New Roman',serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--serif-b);font-size:17px;color:var(--ink);line-height:1.55;
+    min-height:100vh;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) calc(70px + env(safe-area-inset-bottom)) env(safe-area-inset-left);
+    background:
+      radial-gradient(130% 100% at 50% -25%, rgba(255,252,244,.7), transparent 55%),
+      radial-gradient(150% 120% at 50% 120%, rgba(120,92,55,.10), transparent 55%),
+      linear-gradient(170deg,var(--bg),var(--bg2)),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    background-attachment:fixed;
+  }
+  .wrap{max-width:840px;margin:0 auto;padding:0 22px}
+
+  header.top{text-align:center;padding:46px 20px 6px}
+  header.top .eyebrow{font-size:12px;letter-spacing:6px;text-transform:uppercase;color:var(--accent);font-family:system-ui,sans-serif;font-weight:600;opacity:.9}
+  header.top h1{font-family:var(--serif-d);font-size:52px;margin:16px 0 4px;font-weight:700;letter-spacing:.5px;line-height:1.05}
+  header.top .sub{color:var(--muted);font-size:17px;font-style:italic;font-family:var(--serif-d)}
+  .flourish{display:flex;align-items:center;justify-content:center;gap:16px;margin:22px auto 4px;max-width:360px;color:var(--gold)}
+  .flourish::before,.flourish::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--line2))}
+  .flourish::after{background:linear-gradient(90deg,var(--line2),transparent)}
+  .flourish span{font-size:22px;letter-spacing:3px;color:var(--gold2)}
+  .intro{max-width:600px;margin:6px auto 0;text-align:center;font-style:italic;font-size:16px;opacity:.82}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:28px 0 20px;border:1px solid var(--line2);border-radius:var(--radius);background:var(--paper);overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 12px 32px rgba(90,68,40,.08)}
+  .stat{padding:20px 10px;text-align:center;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:none}
+  .stat .num{font-family:var(--serif-d);font-size:31px;font-weight:700;color:var(--accent)}
+  .stat .lbl{font-size:11px;color:var(--muted);margin-top:6px;text-transform:uppercase;letter-spacing:1.5px;font-family:system-ui,sans-serif}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 18px}
+  .toolbar input[type=search]{flex:1;min-width:200px;font-family:var(--serif-b);font-size:16px;padding:11px 16px;border:1px solid var(--line2);border-radius:30px;background:var(--paper);color:var(--ink);outline:none}
+  .toolbar input[type=search]:focus{border-color:var(--accent2)}
+  .toolbar select{font-family:system-ui,sans-serif;font-size:14px;padding:10px 14px;border:1px solid var(--line2);border-radius:30px;background:var(--paper);color:var(--ink);cursor:pointer;outline:none}
+  .btn{font-family:system-ui,sans-serif;font-size:14px;font-weight:600;padding:11px 18px;border:1px solid var(--accent);border-radius:30px;cursor:pointer;background:var(--accent);color:#fff;transition:.18s}
+  .btn:hover{background:var(--accent2);border-color:var(--accent2);transform:translateY(-1px)}
+  .btn.ghost{background:transparent;color:var(--accent)}
+  .btn.ghost:hover{background:var(--accent);color:#fff}
+  .btn.primary{background:var(--gold);border-color:var(--gold);color:#fff}
+  .btn.primary:hover{background:var(--gold2);border-color:var(--gold2)}
+  .btn.dirty{box-shadow:0 0 0 3px rgba(169,133,47,.28)}
+
+  .add-panel{background:var(--paper);border:1px dashed var(--gold);border-radius:var(--radius);padding:22px;margin-bottom:22px;display:none;box-shadow:0 8px 24px rgba(90,68,40,.06)}
+  .add-panel.open{display:block}
+  .add-panel h3{font-family:var(--serif-d);font-size:20px;margin-bottom:14px;font-weight:600}
+  .fields{display:flex;flex-wrap:wrap;gap:10px}
+  .add-panel input[type=text],.edit-form input[type=text]{flex:1;min-width:170px;font-family:var(--serif-b);font-size:16px;padding:11px 15px;border:1px solid var(--line2);border-radius:10px;background:#fff;color:var(--ink);outline:none}
+  .add-panel input[type=text]:focus,.edit-form input[type=text]:focus{border-color:var(--accent2)}
+  label.chk{display:flex;align-items:center;gap:6px;font-family:system-ui,sans-serif;font-size:14px;color:var(--muted);cursor:pointer;white-space:nowrap}
+  .acts{margin-top:14px;display:flex;gap:10px}
+
+  #list{
+    position:relative;
+    background:linear-gradient(180deg,var(--paper),var(--paper2));
+    border:1px solid var(--line2);border-radius:var(--radius);
+    padding:10px 30px;
+    box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 0 60px rgba(120,92,55,.06) inset,0 14px 36px rgba(90,68,40,.09);
+  }
+  #list::before,#list::after{position:absolute;font-family:var(--serif-d);font-size:26px;color:var(--gold);opacity:.4;line-height:1;pointer-events:none}
+  #list::before{content:"❧";top:10px;left:12px}
+  #list::after{content:"❧";bottom:10px;right:12px;transform:scaleX(-1)}
+
+  .book{border-bottom:1px solid var(--line);padding:20px 6px;display:grid;grid-template-columns:1fr auto;gap:6px 18px;align-items:center;transition:background .15s}
+  .book:last-child{border-bottom:none}
+  .book .meta{grid-column:1}
+  .book .title{font-family:var(--serif-d);font-size:22px;font-weight:600;letter-spacing:.1px}
+  .book .lang-tag{display:inline-block;font-family:system-ui,sans-serif;font-size:10px;font-weight:700;color:#fff;background:var(--gold);padding:2px 7px;border-radius:6px;margin-left:8px;vertical-align:middle}
+  .book .author{color:var(--muted);font-size:16px;font-style:italic;margin-top:3px}
+  .book .author .num-badge{font-family:var(--serif-d);font-style:italic;font-size:16px;color:var(--gold);margin-right:10px}
+
+  .rate{grid-column:2;grid-row:1 / span 2;min-width:240px;text-align:right}
+  .rate .row{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+  .rate input[type=range]{-webkit-appearance:none;appearance:none;width:120px;height:5px;border-radius:6px;background:linear-gradient(90deg,var(--gold2) var(--p,0%),var(--line2) var(--p,0%));outline:none;cursor:pointer}
+  .rate input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);border:3px solid var(--paper);box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer}
+  .rate input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:3px solid var(--paper);box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:pointer}
+  .rate .score{font-family:var(--serif-d);font-weight:600;font-size:18px;min-width:52px;text-align:center;color:var(--accent)}
+  .rate .score.unset{color:var(--muted);font-weight:400;font-size:14px;font-family:var(--serif-b);font-style:italic}
+  .rate .stars{font-size:14px;color:var(--gold2);letter-spacing:3px;margin-top:5px;height:17px}
+  .icon-btn{background:none;border:none;color:var(--line2);cursor:pointer;font-size:16px;font-family:system-ui,sans-serif;padding:3px 5px;line-height:1;transition:.15s}
+  .icon-btn:hover{color:var(--accent)}
+  .icon-btn.edit:hover{color:var(--gold)}
+
+  .book.editing{grid-template-columns:1fr}
+  .edit-form{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:2px 0}
+  .edit-form .acts{margin-top:0}
+
+  .empty{text-align:center;color:var(--muted);font-style:italic;padding:50px 20px}
+
+  footer{text-align:center;color:var(--muted);font-size:14px;margin-top:34px;font-family:system-ui,sans-serif;line-height:1.7}
+  footer .reset{color:var(--accent);cursor:pointer;text-decoration:underline}
+
+  .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--ink);color:#f7efe1;font-family:system-ui,sans-serif;font-size:14px;padding:11px 20px;border-radius:30px;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:.25s;z-index:50}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media(max-width:640px){
+    header.top{padding-top:34px}
+    header.top h1{font-size:38px}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .stat:nth-child(2){border-right:none}
+    .stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--line)}
+    #list{padding:6px 18px}
+    .book{grid-template-columns:1fr}
+    .rate{grid-column:1;grid-row:auto;text-align:left;margin-top:10px;min-width:0}
+    .rate .row{justify-content:flex-start}
+    .rate input[type=range]{flex:1}
+    .toolbar input[type=search]{min-width:100%}
+  }
+</style>
+<link rel="apple-touch-icon" href="data:image/png;base64,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"><link rel="icon" href="data:image/png;base64,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"></head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Личная библиотека</div>
+    <h1>Что я прочитал</h1>
+    <div class="sub">собрание прочитанного</div>
+    <div class="flourish"><span>❦</span></div>
+    <p class="intro">Всё, что я прочитал за свою жизнь — с личными оценками по десятибалльной шкале.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="num" id="statTotal">78</div><div class="lbl">Всего книг</div></div>
+    <div class="stat"><div class="num" id="statRated">78</div><div class="lbl">Оценено</div></div>
+    <div class="stat"><div class="num" id="statAvg">7.1</div><div class="lbl">Средний балл</div></div>
+    <div class="stat"><div class="num" id="statAuthors">40</div><div class="lbl">Авторов</div></div>
+  </div>
+
+  <div class="toolbar">
+    <input type="search" id="search" placeholder="Поиск по названию или автору…">
+    <select id="sort">
+      <option value="default">По порядку</option>
+      <option value="title">По названию</option>
+      <option value="author">По автору</option>
+      <option value="rating-desc">Оценка ↓</option>
+      <option value="rating-asc">Оценка ↑</option>
+    </select>
+    <button class="btn" id="addToggle">+ Добавить</button>
+    <button class="btn primary" id="saveBtn">💾 Сохранить в файл</button>
+    <button class="btn ghost" id="exportBtn">⬇ Скачать копию</button>
+    <button class="btn ghost" id="importBtn">⬆ Загрузить копию</button>
+    <input type="file" id="importFile" accept=".html,.json" style="display:none">
+  </div>
+
+  <div class="add-panel" id="addPanel">
+    <h3>Новая книга</h3>
+    <div class="fields">
+      <input type="text" id="newTitle" placeholder="Название произведения">
+      <input type="text" id="newAuthor" placeholder="Автор">
+      <label class="chk"><input type="checkbox" id="newEng"> на английском</label>
+    </div>
+    <div class="acts">
+      <button class="btn" id="saveBook">Добавить</button>
+      <button class="btn ghost" id="cancelBook">Отмена</button>
+    </div>
+  </div>
+
+  <div id="list"><div class="book"><div class="meta"><div class="title">Спать хочется</div><div class="author"><span class="num-badge">1</span>Антон Чехов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="спать_хочется|антон_чехов" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="спать_хочется|антон_чехов">✎</button><button class="icon-btn del" title="Удалить" data-del="спать_хочется|антон_чехов">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">А зори здесь тихие</div><div class="author"><span class="num-badge">2</span>Борис Васильев</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="а_зори_здесь_тихие|борис_васильев" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="а_зори_здесь_тихие|борис_васильев">✎</button><button class="icon-btn del" title="Удалить" data-del="а_зори_здесь_тихие|борис_васильев">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Записки из подполья</div><div class="author"><span class="num-badge">3</span>Фёдор Достоевский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="6" data-id="записки_из_подполья|фёдор_достоевский" style="--p:60%"><span class="score set">6/10</span><button class="icon-btn edit" title="Изменить" data-edit="записки_из_подполья|фёдор_достоевский">✎</button><button class="icon-btn del" title="Удалить" data-del="записки_из_подполья|фёдор_достоевский">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Бремя страстей человеческих</div><div class="author"><span class="num-badge">4</span>Сомерсет Моэм</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="9" data-id="бремя_страстей_человеческих|сомерсет_моэм" style="--p:90%"><span class="score set">9/10</span><button class="icon-btn edit" title="Изменить" data-edit="бремя_страстей_человеческих|сомерсет_моэм">✎</button><button class="icon-btn del" title="Удалить" data-del="бремя_страстей_человеческих|сомерсет_моэм">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Война и мир. Том 1</div><div class="author"><span class="num-badge">5</span>Лев Толстой</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="война_и_мир._том_1|лев_толстой" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="война_и_мир._том_1|лев_толстой">✎</button><button class="icon-btn del" title="Удалить" data-del="война_и_мир._том_1|лев_толстой">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Война и мир. Том 2</div><div class="author"><span class="num-badge">6</span>Лев Толстой</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="война_и_мир._том_2|лев_толстой" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="война_и_мир._том_2|лев_толстой">✎</button><button class="icon-btn del" title="Удалить" data-del="война_и_мир._том_2|лев_толстой">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Война и мир. Том 3</div><div class="author"><span class="num-badge">7</span>Лев Толстой</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="война_и_мир._том_3|лев_толстой" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="война_и_мир._том_3|лев_толстой">✎</button><button class="icon-btn del" title="Удалить" data-del="война_и_мир._том_3|лев_толстой">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Война и мир. Том 4</div><div class="author"><span class="num-badge">8</span>Лев Толстой</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="война_и_мир._том_4|лев_толстой" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="война_и_мир._том_4|лев_толстой">✎</button><button class="icon-btn del" title="Удалить" data-del="война_и_мир._том_4|лев_толстой">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Кому на Руси жить хорошо</div><div class="author"><span class="num-badge">9</span>Николай Некрасов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="5" data-id="кому_на_руси_жить_хорошо|николай_некрасов" style="--p:50%"><span class="score set">5/10</span><button class="icon-btn edit" title="Изменить" data-edit="кому_на_руси_жить_хорошо|николай_некрасов">✎</button><button class="icon-btn del" title="Удалить" data-del="кому_на_руси_жить_хорошо|николай_некрасов">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Смерть Ивана Ильича</div><div class="author"><span class="num-badge">10</span>Лев Толстой</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="смерть_ивана_ильича|лев_толстой" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="смерть_ивана_ильича|лев_толстой">✎</button><button class="icon-btn del" title="Удалить" data-del="смерть_ивана_ильича|лев_толстой">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Подросток</div><div class="author"><span class="num-badge">11</span>Фёдор Достоевский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="9" data-id="подросток|фёдор_достоевский" style="--p:90%"><span class="score set">9/10</span><button class="icon-btn edit" title="Изменить" data-edit="подросток|фёдор_достоевский">✎</button><button class="icon-btn del" title="Удалить" data-del="подросток|фёдор_достоевский">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Собор Парижской Богоматери</div><div class="author"><span class="num-badge">12</span>Виктор Гюго</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="9" data-id="собор_парижской_богоматери|виктор_гюго" style="--p:90%"><span class="score set">9/10</span><button class="icon-btn edit" title="Изменить" data-edit="собор_парижской_богоматери|виктор_гюго">✎</button><button class="icon-btn del" title="Удалить" data-del="собор_парижской_богоматери|виктор_гюго">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Преступление и наказание</div><div class="author"><span class="num-badge">13</span>Фёдор Достоевский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="10" data-id="преступление_и_наказание|фёдор_достоевский" style="--p:100%"><span class="score set">10/10</span><button class="icon-btn edit" title="Изменить" data-edit="преступление_и_наказание|фёдор_достоевский">✎</button><button class="icon-btn del" title="Удалить" data-del="преступление_и_наказание|фёдор_достоевский">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Евангелие</div><div class="author"><span class="num-badge">14</span>Библия — Новый Завет</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="10" data-id="евангелие|библия_—_новый_завет" style="--p:100%"><span class="score set">10/10</span><button class="icon-btn edit" title="Изменить" data-edit="евангелие|библия_—_новый_завет">✎</button><button class="icon-btn del" title="Удалить" data-del="евангелие|библия_—_новый_завет">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Процесс</div><div class="author"><span class="num-badge">15</span>Франц Кафка</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="6" data-id="процесс|франц_кафка" style="--p:60%"><span class="score set">6/10</span><button class="icon-btn edit" title="Изменить" data-edit="процесс|франц_кафка">✎</button><button class="icon-btn del" title="Удалить" data-del="процесс|франц_кафка">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Человек, который смеётся</div><div class="author"><span class="num-badge">16</span>Виктор Гюго</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="10" data-id="человек,_который_смеётся|виктор_гюго" style="--p:100%"><span class="score set">10/10</span><button class="icon-btn edit" title="Изменить" data-edit="человек,_который_смеётся|виктор_гюго">✎</button><button class="icon-btn del" title="Удалить" data-del="человек,_который_смеётся|виктор_гюго">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">На Западном фронте без перемен</div><div class="author"><span class="num-badge">17</span>Эрих Мария Ремарк</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="на_западном_фронте_без_перемен|эрих_мария_ремарк" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="на_западном_фронте_без_перемен|эрих_мария_ремарк">✎</button><button class="icon-btn del" title="Удалить" data-del="на_западном_фронте_без_перемен|эрих_мария_ремарк">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Наедине с собой. Размышления</div><div class="author"><span class="num-badge">18</span>Марк Аврелий Антонин</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="наедине_с_собой._размышления|марк_аврелий_антонин" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="наедине_с_собой._размышления|марк_аврелий_антонин">✎</button><button class="icon-btn del" title="Удалить" data-del="наедине_с_собой._размышления|марк_аврелий_антонин">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Великая шахматная доска</div><div class="author"><span class="num-badge">19</span>Збигнев Бжезинский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="великая_шахматная_доска|збигнев_бжезинский" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="великая_шахматная_доска|збигнев_бжезинский">✎</button><button class="icon-btn del" title="Удалить" data-del="великая_шахматная_доска|збигнев_бжезинский">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Мартин Иден</div><div class="author"><span class="num-badge">20</span>Джек Лондон</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="10" data-id="мартин_иден|джек_лондон" style="--p:100%"><span class="score set">10/10</span><button class="icon-btn edit" title="Изменить" data-edit="мартин_иден|джек_лондон">✎</button><button class="icon-btn del" title="Удалить" data-del="мартин_иден|джек_лондон">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Братья Карамазовы</div><div class="author"><span class="num-badge">21</span>Фёдор Достоевский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="10" data-id="братья_карамазовы|фёдор_достоевский" style="--p:100%"><span class="score set">10/10</span><button class="icon-btn edit" title="Изменить" data-edit="братья_карамазовы|фёдор_достоевский">✎</button><button class="icon-btn del" title="Удалить" data-del="братья_карамазовы|фёдор_достоевский">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Мёртвые души</div><div class="author"><span class="num-badge">22</span>Николай Гоголь</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="мёртвые_души|николай_гоголь" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="мёртвые_души|николай_гоголь">✎</button><button class="icon-btn del" title="Удалить" data-del="мёртвые_души|николай_гоголь">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Идиот</div><div class="author"><span class="num-badge">23</span>Фёдор Достоевский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="9" data-id="идиот|фёдор_достоевский" style="--p:90%"><span class="score set">9/10</span><button class="icon-btn edit" title="Изменить" data-edit="идиот|фёдор_достоевский">✎</button><button class="icon-btn del" title="Удалить" data-del="идиот|фёдор_достоевский">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Герой нашего времени</div><div class="author"><span class="num-badge">24</span>Михаил Лермонтов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="10" data-id="герой_нашего_времени|михаил_лермонтов" style="--p:100%"><span class="score set">10/10</span><button class="icon-btn edit" title="Изменить" data-edit="герой_нашего_времени|михаил_лермонтов">✎</button><button class="icon-btn del" title="Удалить" data-del="герой_нашего_времени|михаил_лермонтов">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Кремлёвская школа переговоров</div><div class="author"><span class="num-badge">25</span>Игорь Рызов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="2" data-id="кремлёвская_школа_переговоров|игорь_рызов" style="--p:20%"><span class="score set">2/10</span><button class="icon-btn edit" title="Изменить" data-edit="кремлёвская_школа_переговоров|игорь_рызов">✎</button><button class="icon-btn del" title="Удалить" data-del="кремлёвская_школа_переговоров|игорь_рызов">×</button></div><div class="stars">★☆☆☆☆</div></div></div><div class="book"><div class="meta"><div class="title">В списках не значился</div><div class="author"><span class="num-badge">26</span>Борис Васильев</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="в_списках_не_значился|борис_васильев" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="в_списках_не_значился|борис_васильев">✎</button><button class="icon-btn del" title="Удалить" data-del="в_списках_не_значился|борис_васильев">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Бесы</div><div class="author"><span class="num-badge">27</span>Фёдор Достоевский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="бесы|фёдор_достоевский" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="бесы|фёдор_достоевский">✎</button><button class="icon-btn del" title="Удалить" data-del="бесы|фёдор_достоевский">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Геополитика. Как это делается</div><div class="author"><span class="num-badge">28</span>Николай Стариков</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="5" data-id="геополитика._как_это_делается|николай_стариков" style="--p:50%"><span class="score set">5/10</span><button class="icon-btn edit" title="Изменить" data-edit="геополитика._как_это_делается|николай_стариков">✎</button><button class="icon-btn del" title="Удалить" data-del="геополитика._как_это_делается|николай_стариков">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Отверженные. Том 1</div><div class="author"><span class="num-badge">29</span>Виктор Гюго</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="10" data-id="отверженные._том_1|виктор_гюго" style="--p:100%"><span class="score set">10/10</span><button class="icon-btn edit" title="Изменить" data-edit="отверженные._том_1|виктор_гюго">✎</button><button class="icon-btn del" title="Удалить" data-del="отверженные._том_1|виктор_гюго">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Отверженные. Том 2</div><div class="author"><span class="num-badge">30</span>Виктор Гюго</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="10" data-id="отверженные._том_2|виктор_гюго" style="--p:100%"><span class="score set">10/10</span><button class="icon-btn edit" title="Изменить" data-edit="отверженные._том_2|виктор_гюго">✎</button><button class="icon-btn del" title="Удалить" data-del="отверженные._том_2|виктор_гюго">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Евгений Онегин</div><div class="author"><span class="num-badge">31</span>Александр Пушкин</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="4" data-id="евгений_онегин|александр_пушкин" style="--p:40%"><span class="score set">4/10</span><button class="icon-btn edit" title="Изменить" data-edit="евгений_онегин|александр_пушкин">✎</button><button class="icon-btn del" title="Удалить" data-del="евгений_онегин|александр_пушкин">×</button></div><div class="stars">★★☆☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Гроздья гнева</div><div class="author"><span class="num-badge">32</span>Джон Стейнбек</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="5" data-id="гроздья_гнева|джон_стейнбек" style="--p:50%"><span class="score set">5/10</span><button class="icon-btn edit" title="Изменить" data-edit="гроздья_гнева|джон_стейнбек">✎</button><button class="icon-btn del" title="Удалить" data-del="гроздья_гнева|джон_стейнбек">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">1984</div><div class="author"><span class="num-badge">33</span>Джордж Оруэлл</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="5" data-id="1984|джордж_оруэлл" style="--p:50%"><span class="score set">5/10</span><button class="icon-btn edit" title="Изменить" data-edit="1984|джордж_оруэлл">✎</button><button class="icon-btn del" title="Удалить" data-del="1984|джордж_оруэлл">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Государь</div><div class="author"><span class="num-badge">34</span>Никколо Макиавелли</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="государь|никколо_макиавелли" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="государь|никколо_макиавелли">✎</button><button class="icon-btn del" title="Удалить" data-del="государь|никколо_макиавелли">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Двенадцать стульев</div><div class="author"><span class="num-badge">35</span>Илья Ильф, Евгений Петров</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="9" data-id="двенадцать_стульев|илья_ильф,_евгений_петров" style="--p:90%"><span class="score set">9/10</span><button class="icon-btn edit" title="Изменить" data-edit="двенадцать_стульев|илья_ильф,_евгений_петров">✎</button><button class="icon-btn del" title="Удалить" data-del="двенадцать_стульев|илья_ильф,_евгений_петров">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Шинель</div><div class="author"><span class="num-badge">36</span>Николай Гоголь</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="шинель|николай_гоголь" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="шинель|николай_гоголь">✎</button><button class="icon-btn del" title="Удалить" data-del="шинель|николай_гоголь">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">После бала</div><div class="author"><span class="num-badge">37</span>Лев Толстой</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="после_бала|лев_толстой" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="после_бала|лев_толстой">✎</button><button class="icon-btn del" title="Удалить" data-del="после_бала|лев_толстой">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Мильон терзаний (критический этюд)</div><div class="author"><span class="num-badge">38</span>Иван Гончаров</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="5" data-id="мильон_терзаний_(критический_этюд)|иван_гончаров" style="--p:50%"><span class="score set">5/10</span><button class="icon-btn edit" title="Изменить" data-edit="мильон_терзаний_(критический_этюд)|иван_гончаров">✎</button><button class="icon-btn del" title="Удалить" data-del="мильон_терзаний_(критический_этюд)|иван_гончаров">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Горе от ума</div><div class="author"><span class="num-badge">39</span>Александр Грибоедов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="9" data-id="горе_от_ума|александр_грибоедов" style="--p:90%"><span class="score set">9/10</span><button class="icon-btn edit" title="Изменить" data-edit="горе_от_ума|александр_грибоедов">✎</button><button class="icon-btn del" title="Удалить" data-del="горе_от_ума|александр_грибоедов">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Мастер и Маргарита</div><div class="author"><span class="num-badge">40</span>Михаил Булгаков</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="9" data-id="мастер_и_маргарита|михаил_булгаков" style="--p:90%"><span class="score set">9/10</span><button class="icon-btn edit" title="Изменить" data-edit="мастер_и_маргарита|михаил_булгаков">✎</button><button class="icon-btn del" title="Удалить" data-del="мастер_и_маргарита|михаил_булгаков">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Учитель фехтования</div><div class="author"><span class="num-badge">41</span>Александр Дюма</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="9" data-id="учитель_фехтования|александр_дюма" style="--p:90%"><span class="score set">9/10</span><button class="icon-btn edit" title="Изменить" data-edit="учитель_фехтования|александр_дюма">✎</button><button class="icon-btn del" title="Удалить" data-del="учитель_фехтования|александр_дюма">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Людмила</div><div class="author"><span class="num-badge">42</span>Василий Жуковский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="5" data-id="людмила|василий_жуковский" style="--p:50%"><span class="score set">5/10</span><button class="icon-btn edit" title="Изменить" data-edit="людмила|василий_жуковский">✎</button><button class="icon-btn del" title="Удалить" data-del="людмила|василий_жуковский">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Светлана</div><div class="author"><span class="num-badge">43</span>Василий Жуковский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="5" data-id="светлана|василий_жуковский" style="--p:50%"><span class="score set">5/10</span><button class="icon-btn edit" title="Изменить" data-edit="светлана|василий_жуковский">✎</button><button class="icon-btn del" title="Удалить" data-del="светлана|василий_жуковский">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Бесприданница</div><div class="author"><span class="num-badge">44</span>Александр Островский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="3" data-id="бесприданница|александр_островский" style="--p:30%"><span class="score set">3/10</span><button class="icon-btn edit" title="Изменить" data-edit="бесприданница|александр_островский">✎</button><button class="icon-btn del" title="Удалить" data-del="бесприданница|александр_островский">×</button></div><div class="stars">★★☆☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Цыганы</div><div class="author"><span class="num-badge">45</span>Александр Пушкин</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="6" data-id="цыганы|александр_пушкин" style="--p:60%"><span class="score set">6/10</span><button class="icon-btn edit" title="Изменить" data-edit="цыганы|александр_пушкин">✎</button><button class="icon-btn del" title="Удалить" data-del="цыганы|александр_пушкин">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Обломов</div><div class="author"><span class="num-badge">46</span>Иван Гончаров</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="обломов|иван_гончаров" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="обломов|иван_гончаров">✎</button><button class="icon-btn del" title="Удалить" data-del="обломов|иван_гончаров">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Ода на день восшествия на Всероссийский престол… императрицы Елисаветы</div><div class="author"><span class="num-badge">47</span>Михаил Ломоносов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="ода_на_день_восшествия_на_всероссийский_престол…_императрицы_елисаветы|михаил_ломоносов" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="ода_на_день_восшествия_на_всероссийский_престол…_императрицы_елисаветы|михаил_ломоносов">✎</button><button class="icon-btn del" title="Удалить" data-del="ода_на_день_восшествия_на_всероссийский_престол…_императрицы_елисаветы|михаил_ломоносов">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Ионыч</div><div class="author"><span class="num-badge">48</span>Антон Чехов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="ионыч|антон_чехов" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="ионыч|антон_чехов">✎</button><button class="icon-btn del" title="Удалить" data-del="ионыч|антон_чехов">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Леди Макбет Мценского уезда</div><div class="author"><span class="num-badge">49</span>Николай Лесков</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="9" data-id="леди_макбет_мценского_уезда|николай_лесков" style="--p:90%"><span class="score set">9/10</span><button class="icon-btn edit" title="Изменить" data-edit="леди_макбет_мценского_уезда|николай_лесков">✎</button><button class="icon-btn del" title="Удалить" data-del="леди_макбет_мценского_уезда|николай_лесков">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Сон смешного человека</div><div class="author"><span class="num-badge">50</span>Фёдор Достоевский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="6" data-id="сон_смешного_человека|фёдор_достоевский" style="--p:60%"><span class="score set">6/10</span><button class="icon-btn edit" title="Изменить" data-edit="сон_смешного_человека|фёдор_достоевский">✎</button><button class="icon-btn del" title="Удалить" data-del="сон_смешного_человека|фёдор_достоевский">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Собачье сердце</div><div class="author"><span class="num-badge">51</span>Михаил Булгаков</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="9" data-id="собачье_сердце|михаил_булгаков" style="--p:90%"><span class="score set">9/10</span><button class="icon-btn edit" title="Изменить" data-edit="собачье_сердце|михаил_булгаков">✎</button><button class="icon-btn del" title="Удалить" data-del="собачье_сердце|михаил_булгаков">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Гроза</div><div class="author"><span class="num-badge">52</span>Александр Островский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="4" data-id="гроза|александр_островский" style="--p:40%"><span class="score set">4/10</span><button class="icon-btn edit" title="Изменить" data-edit="гроза|александр_островский">✎</button><button class="icon-btn del" title="Удалить" data-del="гроза|александр_островский">×</button></div><div class="stars">★★☆☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Отцы и дети</div><div class="author"><span class="num-badge">53</span>Иван Тургенев</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="отцы_и_дети|иван_тургенев" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="отцы_и_дети|иван_тургенев">✎</button><button class="icon-btn del" title="Удалить" data-del="отцы_и_дети|иван_тургенев">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Белые ночи</div><div class="author"><span class="num-badge">54</span>Фёдор Достоевский</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="6" data-id="белые_ночи|фёдор_достоевский" style="--p:60%"><span class="score set">6/10</span><button class="icon-btn edit" title="Изменить" data-edit="белые_ночи|фёдор_достоевский">✎</button><button class="icon-btn del" title="Удалить" data-del="белые_ночи|фёдор_достоевский">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Станционный смотритель</div><div class="author"><span class="num-badge">55</span>Александр Пушкин</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="станционный_смотритель|александр_пушкин" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="станционный_смотритель|александр_пушкин">✎</button><button class="icon-btn del" title="Удалить" data-del="станционный_смотритель|александр_пушкин">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Недоросль</div><div class="author"><span class="num-badge">56</span>Денис Фонвизин</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="недоросль|денис_фонвизин" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="недоросль|денис_фонвизин">✎</button><button class="icon-btn del" title="Удалить" data-del="недоросль|денис_фонвизин">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Песня про царя Ивана Васильевича, молодого опричника и удалого купца Калашникова</div><div class="author"><span class="num-badge">57</span>Михаил Лермонтов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="4" data-id="песня_про_царя_ивана_васильевича,_молодого_опричника_и_удалого_купца_калашникова|михаил_лермонтов" style="--p:40%"><span class="score set">4/10</span><button class="icon-btn edit" title="Изменить" data-edit="песня_про_царя_ивана_васильевича,_молодого_опричника_и_удалого_купца_калашникова|михаил_лермонтов">✎</button><button class="icon-btn del" title="Удалить" data-del="песня_про_царя_ивана_васильевича,_молодого_опричника_и_удалого_купца_калашникова|михаил_лермонтов">×</button></div><div class="stars">★★☆☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Мцыри</div><div class="author"><span class="num-badge">58</span>Михаил Лермонтов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="5" data-id="мцыри|михаил_лермонтов" style="--p:50%"><span class="score set">5/10</span><button class="icon-btn edit" title="Изменить" data-edit="мцыри|михаил_лермонтов">✎</button><button class="icon-btn del" title="Удалить" data-del="мцыри|михаил_лермонтов">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Смерть чиновника</div><div class="author"><span class="num-badge">59</span>Антон Чехов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="смерть_чиновника|антон_чехов" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="смерть_чиновника|антон_чехов">✎</button><button class="icon-btn del" title="Удалить" data-del="смерть_чиновника|антон_чехов">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Хирургия</div><div class="author"><span class="num-badge">60</span>Антон Чехов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="5" data-id="хирургия|антон_чехов" style="--p:50%"><span class="score set">5/10</span><button class="icon-btn edit" title="Изменить" data-edit="хирургия|антон_чехов">✎</button><button class="icon-btn del" title="Удалить" data-del="хирургия|антон_чехов">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Лошадиная фамилия</div><div class="author"><span class="num-badge">61</span>Антон Чехов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="3" data-id="лошадиная_фамилия|антон_чехов" style="--p:30%"><span class="score set">3/10</span><button class="icon-btn edit" title="Изменить" data-edit="лошадиная_фамилия|антон_чехов">✎</button><button class="icon-btn del" title="Удалить" data-del="лошадиная_фамилия|антон_чехов">×</button></div><div class="stars">★★☆☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Медный всадник</div><div class="author"><span class="num-badge">62</span>Александр Пушкин</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="6" data-id="медный_всадник|александр_пушкин" style="--p:60%"><span class="score set">6/10</span><button class="icon-btn edit" title="Изменить" data-edit="медный_всадник|александр_пушкин">✎</button><button class="icon-btn del" title="Удалить" data-del="медный_всадник|александр_пушкин">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Фауст</div><div class="author"><span class="num-badge">63</span>Иоганн Вольфганг Гёте</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="2" data-id="фауст|иоганн_вольфганг_гёте" style="--p:20%"><span class="score set">2/10</span><button class="icon-btn edit" title="Изменить" data-edit="фауст|иоганн_вольфганг_гёте">✎</button><button class="icon-btn del" title="Удалить" data-del="фауст|иоганн_вольфганг_гёте">×</button></div><div class="stars">★☆☆☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Бедная Лиза</div><div class="author"><span class="num-badge">64</span>Николай Карамзин</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="6" data-id="бедная_лиза|николай_карамзин" style="--p:60%"><span class="score set">6/10</span><button class="icon-btn edit" title="Изменить" data-edit="бедная_лиза|николай_карамзин">✎</button><button class="icon-btn del" title="Удалить" data-del="бедная_лиза|николай_карамзин">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Анна Каренина</div><div class="author"><span class="num-badge">65</span>Лев Толстой</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="анна_каренина|лев_толстой" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="анна_каренина|лев_толстой">✎</button><button class="icon-btn del" title="Удалить" data-del="анна_каренина|лев_толстой">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Вишнёвый сад</div><div class="author"><span class="num-badge">66</span>Антон Чехов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="вишнёвый_сад|антон_чехов" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="вишнёвый_сад|антон_чехов">✎</button><button class="icon-btn del" title="Удалить" data-del="вишнёвый_сад|антон_чехов">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Очарованный странник</div><div class="author"><span class="num-badge">67</span>Николай Лесков</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="очарованный_странник|николай_лесков" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="очарованный_странник|николай_лесков">✎</button><button class="icon-btn del" title="Удалить" data-del="очарованный_странник|николай_лесков">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Ванька</div><div class="author"><span class="num-badge">68</span>Антон Чехов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="6" data-id="ванька|антон_чехов" style="--p:60%"><span class="score set">6/10</span><button class="icon-btn edit" title="Изменить" data-edit="ванька|антон_чехов">✎</button><button class="icon-btn del" title="Удалить" data-del="ванька|антон_чехов">×</button></div><div class="stars">★★★☆☆</div></div></div><div class="book"><div class="meta"><div class="title">Жизнь в вопросах и восклицаниях</div><div class="author"><span class="num-badge">69</span>Антон Чехов</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="жизнь_в_вопросах_и_восклицаниях|антон_чехов" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="жизнь_в_вопросах_и_восклицаниях|антон_чехов">✎</button><button class="icon-btn del" title="Удалить" data-del="жизнь_в_вопросах_и_восклицаниях|антон_чехов">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Объявлено убийство</div><div class="author"><span class="num-badge">70</span>Агата Кристи</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="объявлено_убийство|агата_кристи" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="объявлено_убийство|агата_кристи">✎</button><button class="icon-btn del" title="Удалить" data-del="объявлено_убийство|агата_кристи">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Убийство в «Восточном экспрессе»</div><div class="author"><span class="num-badge">71</span>Агата Кристи</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="9" data-id="убийство_в_«восточном_экспрессе»|агата_кристи" style="--p:90%"><span class="score set">9/10</span><button class="icon-btn edit" title="Изменить" data-edit="убийство_в_«восточном_экспрессе»|агата_кристи">✎</button><button class="icon-btn del" title="Удалить" data-del="убийство_в_«восточном_экспрессе»|агата_кристи">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">Трагедия в трёх актах</div><div class="author"><span class="num-badge">72</span>Агата Кристи</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="8" data-id="трагедия_в_трёх_актах|агата_кристи" style="--p:80%"><span class="score set">8/10</span><button class="icon-btn edit" title="Изменить" data-edit="трагедия_в_трёх_актах|агата_кристи">✎</button><button class="icon-btn del" title="Удалить" data-del="трагедия_в_трёх_актах|агата_кристи">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Скотный двор (Animal Farm)<span class="lang-tag">ENG</span></div><div class="author"><span class="num-badge">73</span>Джордж Оруэлл</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="скотный_двор_(animal_farm)|джордж_оруэлл" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="скотный_двор_(animal_farm)|джордж_оруэлл">✎</button><button class="icon-btn del" title="Удалить" data-del="скотный_двор_(animal_farm)|джордж_оруэлл">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Столкновение цивилизаций</div><div class="author"><span class="num-badge">74</span>Сэмюэл Хантингтон</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="10" data-id="столкновение_цивилизаций|сэмюэл_хантингтон" style="--p:100%"><span class="score set">10/10</span><button class="icon-btn edit" title="Изменить" data-edit="столкновение_цивилизаций|сэмюэл_хантингтон">✎</button><button class="icon-btn del" title="Удалить" data-del="столкновение_цивилизаций|сэмюэл_хантингтон">×</button></div><div class="stars">★★★★★</div></div></div><div class="book"><div class="meta"><div class="title">The Curious Incident of the Dog in the Night-Time<span class="lang-tag">ENG</span></div><div class="author"><span class="num-badge">75</span>Mark Haddon</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="the_curious_incident_of_the_dog_in_the_night-time|mark_haddon" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="the_curious_incident_of_the_dog_in_the_night-time|mark_haddon">✎</button><button class="icon-btn del" title="Удалить" data-del="the_curious_incident_of_the_dog_in_the_night-time|mark_haddon">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Чистый понедельник</div><div class="author"><span class="num-badge">76</span>Иван Бунин</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="чистый_понедельник|иван_бунин" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="чистый_понедельник|иван_бунин">✎</button><button class="icon-btn del" title="Удалить" data-del="чистый_понедельник|иван_бунин">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">Прощай, оружие</div><div class="author"><span class="num-badge">77</span>Эрнест Хемингуэй</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="прощай,_оружие|эрнест_хемингуэй" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="прощай,_оружие|эрнест_хемингуэй">✎</button><button class="icon-btn del" title="Удалить" data-del="прощай,_оружие|эрнест_хемингуэй">×</button></div><div class="stars">★★★★☆</div></div></div><div class="book"><div class="meta"><div class="title">В поисках энергии</div><div class="author"><span class="num-badge">78</span>Дэниел Ергин</div></div><div class="rate"><div class="row"><input type="range" min="0" max="10" step="1" value="7" data-id="в_поисках_энергии|дэниел_ергин" style="--p:70%"><span class="score set">7/10</span><button class="icon-btn edit" title="Изменить" data-edit="в_поисках_энергии|дэниел_ергин">✎</button><button class="icon-btn del" title="Удалить" data-del="в_поисках_энергии|дэниел_ергин">×</button></div><div class="stars">★★★★☆</div></div></div></div>
+
+  <footer>
+    Оценки и правки сохраняются в этом браузере автоматически.<br>
+    «Сохранить в файл» записывает всё в сам файл — для iCloud и переноса между устройствами.<br>
+    <span class="reset" id="resetAll">Сбросить все оценки и вернуть исходный список</span>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- Вшитые данные (обновляются при «Сохранить в файл» / «Скачать копию») ----
+const BAKED = {"ratings":{"спать_хочется|антон_чехов":7,"а_зори_здесь_тихие|борис_васильев":8,"записки_из_подполья|фёдор_достоевский":6,"бремя_страстей_человеческих|сомерсет_моэм":9,"война_и_мир._том_1|лев_толстой":7,"война_и_мир._том_2|лев_толстой":7,"война_и_мир._том_3|лев_толстой":8,"война_и_мир._том_4|лев_толстой":7,"кому_на_руси_жить_хорошо|николай_некрасов":5,"смерть_ивана_ильича|лев_толстой":8,"подросток|фёдор_достоевский":9,"собор_парижской_богоматери|виктор_гюго":9,"преступление_и_наказание|фёдор_достоевский":10,"евангелие|библия_—_новый_завет":10,"процесс|франц_кафка":6,"человек,_который_смеётся|виктор_гюго":10,"на_западном_фронте_без_перемен|эрих_мария_ремарк":7,"наедине_с_собой._размышления|марк_аврелий_антонин":8,"великая_шахматная_доска|збигнев_бжезинский":8,"мартин_иден|джек_лондон":10,"братья_карамазовы|фёдор_достоевский":10,"мёртвые_души|николай_гоголь":8,"идиот|фёдор_достоевский":9,"герой_нашего_времени|михаил_лермонтов":10,"кремлёвская_школа_переговоров|игорь_рызов":2,"в_списках_не_значился|борис_васильев":7,"бесы|фёдор_достоевский":7,"геополитика._как_это_делается|николай_стариков":5,"отверженные._том_1|виктор_гюго":10,"отверженные._том_2|виктор_гюго":10,"евгений_онегин|александр_пушкин":4,"гроздья_гнева|джон_стейнбек":5,"1984|джордж_оруэлл":5,"государь|никколо_макиавелли":7,"двенадцать_стульев|илья_ильф,_евгений_петров":9,"шинель|николай_гоголь":8,"после_бала|лев_толстой":7,"мильон_терзаний_(критический_этюд)|иван_гончаров":5,"горе_от_ума|александр_грибоедов":9,"мастер_и_маргарита|михаил_булгаков":9,"учитель_фехтования|александр_дюма":9,"людмила|василий_жуковский":5,"светлана|василий_жуковский":5,"бесприданница|александр_островский":3,"цыганы|александр_пушкин":6,"обломов|иван_гончаров":7,"ода_на_день_восшествия_на_всероссийский_престол…_императрицы_елисаветы|михаил_ломоносов":8,"ионыч|антон_чехов":7,"леди_макбет_мценского_уезда|николай_лесков":9,"сон_смешного_человека|фёдор_достоевский":6,"собачье_сердце|михаил_булгаков":9,"гроза|александр_островский":4,"отцы_и_дети|иван_тургенев":8,"белые_ночи|фёдор_достоевский":6,"станционный_смотритель|александр_пушкин":7,"недоросль|денис_фонвизин":7,"песня_про_царя_ивана_васильевича,_молодого_опричника_и_удалого_купца_калашникова|михаил_лермонтов":4,"мцыри|михаил_лермонтов":5,"смерть_чиновника|антон_чехов":7,"хирургия|антон_чехов":5,"лошадиная_фамилия|антон_чехов":3,"медный_всадник|александр_пушкин":6,"фауст|иоганн_вольфганг_гёте":2,"бедная_лиза|николай_карамзин":6,"анна_каренина|лев_толстой":7,"вишнёвый_сад|антон_чехов":7,"очарованный_странник|николай_лесков":7,"ванька|антон_чехов":6,"жизнь_в_вопросах_и_восклицаниях|антон_чехов":8,"объявлено_убийство|агата_кристи":8,"убийство_в_«восточном_экспрессе»|агата_кристи":9,"трагедия_в_трёх_актах|агата_кристи":8,"скотный_двор_(animal_farm)|джордж_оруэлл":7,"столкновение_цивилизаций|сэмюэл_хантингтон":10,"the_curious_incident_of_the_dog_in_the_night-time|mark_haddon":7,"в_поисках_энергии|дэниел_ергин":7,"чистый_понедельник|иван_бунин":7,"прощай,_оружие|эрнест_хемингуэй":7},"custom":[{"t":"В поисках энергии","a":"Дэниел Ергин","eng":false,"id":"в_поисках_энергии|дэниел_ергин"}],"deleted":[],"edits":{},"updated":1782908715762}; // __BAKED_MARKER__
+
+// ---- Исходный список ----
+const SEED = [
+  {t:"Спать хочется", a:"Антон Чехов"},
+  {t:"А зори здесь тихие", a:"Борис Васильев"},
+  {t:"Записки из подполья", a:"Фёдор Достоевский"},
+  {t:"Бремя страстей человеческих", a:"Сомерсет Моэм"},
+  {t:"Война и мир. Том 1", a:"Лев Толстой"},
+  {t:"Война и мир. Том 2", a:"Лев Толстой"},
+  {t:"Война и мир. Том 3", a:"Лев Толстой"},
+  {t:"Война и мир. Том 4", a:"Лев Толстой"},
+  {t:"Кому на Руси жить хорошо", a:"Николай Некрасов"},
+  {t:"Смерть Ивана Ильича", a:"Лев Толстой"},
+  {t:"Подросток", a:"Фёдор Достоевский"},
+  {t:"Собор Парижской Богоматери", a:"Виктор Гюго"},
+  {t:"Преступление и наказание", a:"Фёдор Достоевский"},
+  {t:"Евангелие", a:"Библия — Новый Завет"},
+  {t:"Процесс", a:"Франц Кафка"},
+  {t:"Человек, который смеётся", a:"Виктор Гюго"},
+  {t:"На Западном фронте без перемен", a:"Эрих Мария Ремарк"},
+  {t:"Наедине с собой. Размышления", a:"Марк Аврелий Антонин"},
+  {t:"Великая шахматная доска", a:"Збигнев Бжезинский"},
+  {t:"Мартин Иден", a:"Джек Лондон"},
+  {t:"Братья Карамазовы", a:"Фёдор Достоевский"},
+  {t:"Мёртвые души", a:"Николай Гоголь"},
+  {t:"Идиот", a:"Фёдор Достоевский"},
+  {t:"Герой нашего времени", a:"Михаил Лермонтов"},
+  {t:"Кремлёвская школа переговоров", a:"Игорь Рызов"},
+  {t:"В списках не значился", a:"Борис Васильев"},
+  {t:"Бесы", a:"Фёдор Достоевский"},
+  {t:"Геополитика. Как это делается", a:"Николай Стариков"},
+  {t:"Отверженные. Том 1", a:"Виктор Гюго"},
+  {t:"Отверженные. Том 2", a:"Виктор Гюго"},
+  {t:"Евгений Онегин", a:"Александр Пушкин"},
+  {t:"Гроздья гнева", a:"Джон Стейнбек"},
+  {t:"1984", a:"Джордж Оруэлл"},
+  {t:"Государь", a:"Никколо Макиавелли"},
+  {t:"Двенадцать стульев", a:"Илья Ильф, Евгений Петров"},
+  {t:"Шинель", a:"Николай Гоголь"},
+  {t:"После бала", a:"Лев Толстой"},
+  {t:"Мильон терзаний (критический этюд)", a:"Иван Гончаров"},
+  {t:"Горе от ума", a:"Александр Грибоедов"},
+  {t:"Мастер и Маргарита", a:"Михаил Булгаков"},
+  {t:"Учитель фехтования", a:"Александр Дюма"},
+  {t:"Людмила", a:"Василий Жуковский"},
+  {t:"Светлана", a:"Василий Жуковский"},
+  {t:"Бесприданница", a:"Александр Островский"},
+  {t:"Цыганы", a:"Александр Пушкин"},
+  {t:"Обломов", a:"Иван Гончаров"},
+  {t:"Ода на день восшествия на Всероссийский престол… императрицы Елисаветы", a:"Михаил Ломоносов"},
+  {t:"Ионыч", a:"Антон Чехов"},
+  {t:"Леди Макбет Мценского уезда", a:"Николай Лесков"},
+  {t:"Сон смешного человека", a:"Фёдор Достоевский"},
+  {t:"Собачье сердце", a:"Михаил Булгаков"},
+  {t:"Гроза", a:"Александр Островский"},
+  {t:"Отцы и дети", a:"Иван Тургенев"},
+  {t:"Белые ночи", a:"Фёдор Достоевский"},
+  {t:"Станционный смотритель", a:"Александр Пушкин"},
+  {t:"Недоросль", a:"Денис Фонвизин"},
+  {t:"Песня про царя Ивана Васильевича, молодого опричника и удалого купца Калашникова", a:"Михаил Лермонтов"},
+  {t:"Мцыри", a:"Михаил Лермонтов"},
+  {t:"Смерть чиновника", a:"Антон Чехов"},
+  {t:"Хирургия", a:"Антон Чехов"},
+  {t:"Лошадиная фамилия", a:"Антон Чехов"},
+  {t:"Медный всадник", a:"Александр Пушкин"},
+  {t:"Фауст", a:"Иоганн Вольфганг Гёте"},
+  {t:"Бедная Лиза", a:"Николай Карамзин"},
+  {t:"Анна Каренина", a:"Лев Толстой"},
+  {t:"Вишнёвый сад", a:"Антон Чехов"},
+  {t:"Очарованный странник", a:"Николай Лесков"},
+  {t:"Ванька", a:"Антон Чехов"},
+  {t:"Жизнь в вопросах и восклицаниях", a:"Антон Чехов"},
+  {t:"Объявлено убийство", a:"Агата Кристи"},
+  {t:"Убийство в «Восточном экспрессе»", a:"Агата Кристи"},
+  {t:"Трагедия в трёх актах", a:"Агата Кристи"},
+  {t:"Скотный двор (Animal Farm)", a:"Джордж Оруэлл", eng:true},
+  {t:"Столкновение цивилизаций", a:"Сэмюэл Хантингтон"},
+  {t:"The Curious Incident of the Dog in the Night-Time", a:"Mark Haddon", eng:true},
+  {t:"Чистый понедельник", a:"Иван Бунин"},
+  {t:"Прощай, оружие", a:"Эрнест Хемингуэй"}
+];
+
+const LS_KEY = "readingListV1";
+
+// Безопасные обёртки над памятью браузера: если Safari на локальном файле
+// запрещает запись (частый случай на айфоне) — просто молча пропускаем.
+function lsGet(){ try{ return localStorage.getItem(LS_KEY); }catch(e){ return null; } }
+function lsSet(v){ try{ localStorage.setItem(LS_KEY, v); }catch(e){} }
+function lsDel(){ try{ localStorage.removeItem(LS_KEY); }catch(e){} }
+
+function idOf(b){ return (b.t+"|"+b.a).toLowerCase().replace(/\s+/g,"_"); }
+function normalize(s){
+  s = s || {};
+  return {
+    ratings: s.ratings || {},
+    custom:  s.custom  || [],
+    deleted: s.deleted || [],
+    edits:   s.edits   || {},
+    updated: s.updated || 0,
+    mig1:    s.mig1    || false
+  };
+}
+function loadState(){ try{ return JSON.parse(lsGet()) || null; }catch(e){ return null; } }
+function saveState(s){ s.updated = Date.now(); lsSet(JSON.stringify(s)); markDirty(true); }
+function fmtDate(ts){ try{ return new Date(ts).toLocaleString("ru-RU",{day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"}); }catch(e){ return ""; } }
+
+// ---- Загрузка состояния + защита от потери данных ----
+let state = loadState();
+const baked = normalize(BAKED);
+if(!state){
+  state = normalize(baked);
+  lsSet(JSON.stringify(state));
+}else{
+  state = normalize(state);
+  if(baked.updated && baked.updated > (state.updated||0)+1000){
+    if(confirm("Этот файл содержит более свежую версию (от "+fmtDate(baked.updated)+"), чем сохранённая в браузере.\n\nЗагрузить данные из файла? Текущие данные в браузере будут заменены.")){
+      state = normalize(baked);
+      lsSet(JSON.stringify(state));
+    }
+  }
+}
+
+// Разовая чистка: убрать пользовательские дубли, совпавшие с основным списком,
+// и вернуть их из «удалённых», если баг успел их скрыть.
+if(!state.mig1){
+  const seedIds = new Set(SEED.map(b=>idOf(b)));
+  state.custom  = state.custom.filter(b=>!seedIds.has(b.id));
+  state.deleted = state.deleted.filter(id=>!seedIds.has(id));
+  state.mig1 = true;
+  lsSet(JSON.stringify(state));
+}
+
+let editing = null;
+let dirty = false;
+
+function allBooks(){
+  const seed = SEED.map(b=>({...b, id:idOf(b), custom:false}));
+  const seedIds = new Set(seed.map(b=>b.id));
+  const custom = state.custom.filter(b=>!seedIds.has(b.id)).map(b=>({...b, custom:true}));
+  let all = [...seed, ...custom].filter(b=>!state.deleted.includes(b.id));
+  return all.map(b=>{
+    const e = state.edits[b.id];
+    return e ? {...b, t:e.t, a:e.a, eng:e.eng} : b;
+  });
+}
+
+const listEl = document.getElementById("list");
+const searchEl = document.getElementById("search");
+const sortEl = document.getElementById("sort");
+
+function starStr(n){ if(!n) return ""; const full = Math.round(n/2); return "★".repeat(full)+"☆".repeat(5-full); }
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function markDirty(v){
+  dirty = v;
+  const b = document.getElementById("saveBtn");
+  if(b) b.classList.toggle("dirty", v);
+}
+
+function render(){
+  const q = searchEl.value.trim().toLowerCase();
+  let books = allBooks();
+  if(q){ books = books.filter(b=> (b.t+" "+b.a).toLowerCase().includes(q)); }
+
+  const sort = sortEl.value;
+  if(sort==="title") books.sort((a,b)=>a.t.localeCompare(b.t,"ru"));
+  else if(sort==="author") books.sort((a,b)=>a.a.localeCompare(b.a,"ru")||a.t.localeCompare(b.t,"ru"));
+  else if(sort==="rating-desc") books.sort((a,b)=>(state.ratings[b.id]||0)-(state.ratings[a.id]||0));
+  else if(sort==="rating-asc") books.sort((a,b)=>(state.ratings[a.id]||999)-(state.ratings[b.id]||999));
+
+  listEl.innerHTML = "";
+  if(books.length===0){ listEl.innerHTML = '<div class="empty">Ничего не найдено.</div>'; }
+
+  books.forEach((b,i)=>{
+    const r = state.ratings[b.id] || 0;
+    const card = document.createElement("div");
+    card.className = "book";
+    if(editing===b.id){
+      card.classList.add("editing");
+      card.innerHTML =
+        '<div class="edit-form">'+
+          '<input type="text" class="ef-title" value="'+escapeHtml(b.t)+'" placeholder="Название">'+
+          '<input type="text" class="ef-author" value="'+escapeHtml(b.a)+'" placeholder="Автор">'+
+          '<label class="chk"><input type="checkbox" class="ef-eng" '+(b.eng?'checked':'')+'> на английском</label>'+
+          '<div class="acts">'+
+            '<button class="btn ef-save">Сохранить</button>'+
+            '<button class="btn ghost ef-cancel">Отмена</button>'+
+          '</div>'+
+        '</div>';
+    }else{
+      const pct = (r/10)*100;
+      card.innerHTML =
+        '<div class="meta">'+
+          '<div class="title">'+escapeHtml(b.t)+(b.eng?'<span class="lang-tag">ENG</span>':'')+'</div>'+
+          '<div class="author"><span class="num-badge">'+(i+1)+'</span>'+escapeHtml(b.a)+'</div>'+
+        '</div>'+
+        '<div class="rate">'+
+          '<div class="row">'+
+            '<input type="range" min="0" max="10" step="1" value="'+r+'" data-id="'+escapeHtml(b.id)+'" style="--p:'+pct+'%">'+
+            '<span class="score '+(r?'set':'unset')+'">'+(r? r+'/10' : 'нет')+'</span>'+
+            '<button class="icon-btn edit" title="Изменить" data-edit="'+escapeHtml(b.id)+'">✎</button>'+
+            '<button class="icon-btn del" title="Удалить" data-del="'+escapeHtml(b.id)+'">×</button>'+
+          '</div>'+
+          '<div class="stars">'+starStr(r)+'</div>'+
+        '</div>';
+    }
+    listEl.appendChild(card);
+  });
+
+  bindActions();
+  updateStats();
+}
+
+function bindActions(){
+  listEl.querySelectorAll('input[type=range]').forEach(inp=>{
+    inp.addEventListener('input', e=>{
+      const id = e.target.dataset.id;
+      const v = +e.target.value;
+      e.target.style.setProperty('--p', (v/10*100)+'%');
+      const score = e.target.parentElement.querySelector('.score');
+      score.textContent = v? v+'/10' : 'нет';
+      score.className = 'score '+(v?'set':'unset');
+      e.target.closest('.rate').querySelector('.stars').textContent = starStr(v);
+      if(v) state.ratings[id]=v; else delete state.ratings[id];
+      saveState(state);
+      updateStats();
+    });
+  });
+  listEl.querySelectorAll('[data-edit]').forEach(btn=>{
+    btn.addEventListener('click', e=>{ editing = e.currentTarget.dataset.edit; render();
+      const f = listEl.querySelector('.ef-title'); if(f) f.focus(); });
+  });
+  listEl.querySelectorAll('.ef-save').forEach(btn=> btn.addEventListener('click', saveEdit));
+  listEl.querySelectorAll('.ef-cancel').forEach(btn=> btn.addEventListener('click', ()=>{ editing=null; render(); }));
+  listEl.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const id = e.currentTarget.dataset.del;
+      if(confirm("Удалить эту книгу из списка?")){
+        state.custom = state.custom.filter(b=>b.id!==id);
+        if(!state.deleted.includes(id)) state.deleted.push(id);
+        delete state.ratings[id];
+        delete state.edits[id];
+        saveState(state);
+        render();
+        toast("Книга удалена");
+      }
+    });
+  });
+}
+
+function saveEdit(){
+  const form = listEl.querySelector('.edit-form');
+  if(!form || !editing) return;
+  const t = form.querySelector('.ef-title').value.trim();
+  const a = form.querySelector('.ef-author').value.trim();
+  const eng = form.querySelector('.ef-eng').checked;
+  if(!t){ alert("Введите название"); return; }
+  const id = editing;
+  const custom = state.custom.find(x=>x.id===id);
+  if(custom){ custom.t=t; custom.a=a||"—"; custom.eng=eng; }
+  else{ state.edits[id] = {t, a:a||"—", eng}; }
+  editing = null;
+  saveState(state);
+  render();
+  toast("Изменения сохранены");
+}
+
+function updateStats(){
+  const books = allBooks();
+  const rated = books.filter(b=>state.ratings[b.id]).map(b=>state.ratings[b.id]);
+  document.getElementById("statTotal").textContent = books.length;
+  document.getElementById("statRated").textContent = rated.length;
+  document.getElementById("statAvg").textContent = rated.length ? (rated.reduce((x,y)=>x+y,0)/rated.length).toFixed(1) : "—";
+  document.getElementById("statAuthors").textContent = new Set(books.map(b=>b.a)).size;
+}
+
+// ---- Панель добавления ----
+const addPanel = document.getElementById("addPanel");
+document.getElementById("addToggle").addEventListener("click",()=>{
+  addPanel.classList.toggle("open");
+  if(addPanel.classList.contains("open")) document.getElementById("newTitle").focus();
+});
+document.getElementById("cancelBook").addEventListener("click",()=>addPanel.classList.remove("open"));
+document.getElementById("saveBook").addEventListener("click",()=>{
+  const t = document.getElementById("newTitle").value.trim();
+  const a = document.getElementById("newAuthor").value.trim();
+  const eng = document.getElementById("newEng").checked;
+  if(!t){ alert("Введите название"); return; }
+  const b = {t, a:a||"—", eng};
+  b.id = idOf(b);
+  if(allBooks().some(x=>x.id===b.id)) b.id += "_"+Date.now();
+  state.custom.push(b);
+  state.deleted = state.deleted.filter(d=>d!==b.id);
+  saveState(state);
+  document.getElementById("newTitle").value="";
+  document.getElementById("newAuthor").value="";
+  document.getElementById("newEng").checked=false;
+  addPanel.classList.remove("open");
+  sortEl.value="default";
+  render();
+  toast("Книга добавлена");
+});
+
+document.getElementById("resetAll").addEventListener("click",()=>{
+  if(confirm("Сбросить все оценки, правки и добавленные книги? Список вернётся к исходному.")){
+    lsDel();
+    state = normalize({});
+    state.mig1 = true;
+    editing = null;
+    render();
+    toast("Список сброшен");
+  }
+});
+
+// ---- Сохранение / экспорт / импорт ----
+let fileHandle = null;
+
+function currentBaked(){
+  return {ratings:state.ratings, custom:state.custom, deleted:state.deleted, edits:state.edits, updated:Date.now()};
+}
+function buildHtml(){
+  const wasEditing = editing; editing = null; render();
+  let html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+  const bakedStr = "const BAKED = " + JSON.stringify(currentBaked()) + "; // __BAKED_MARKER__";
+  html = html.replace(/const BAKED = [\s\S]*?; \/\/ __BAKED_MARKER__/, ()=>bakedStr);
+  editing = wasEditing;
+  return html;
+}
+function downloadHtml(html){
+  const blob = new Blob([html], {type:"text/html;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "моя-библиотека.html"; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function saveToFile(){
+  const html = buildHtml();
+  if(window.showSaveFilePicker){
+    try{
+      if(!fileHandle){
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName:"моя-библиотека.html",
+          types:[{description:"HTML",accept:{"text/html":[".html"]}}]
+        });
+      }
+      const w = await fileHandle.createWritable();
+      await w.write(html); await w.close();
+      markDirty(false);
+      toast("Сохранено в файл");
+      return;
+    }catch(e){
+      if(e && e.name==="AbortError") return;
+    }
+  }
+  downloadHtml(html);
+  markDirty(false);
+  toast("Файл скачан");
+}
+
+document.getElementById("saveBtn").addEventListener("click", saveToFile);
+document.getElementById("exportBtn").addEventListener("click", ()=>{ downloadHtml(buildHtml()); markDirty(false); toast("Копия скачана"); });
+
+document.getElementById("importBtn").addEventListener("click", ()=> document.getElementById("importFile").click());
+document.getElementById("importFile").addEventListener("change", e=>{
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const txt = reader.result;
+      let data;
+      const m = txt.match(/const BAKED = ([\s\S]*?); \/\/ __BAKED_MARKER__/);
+      data = m ? JSON.parse(m[1]) : JSON.parse(txt);
+      const cnt = Object.keys(data.ratings||{}).length;
+      const when = data.updated ? " (от "+fmtDate(data.updated)+")" : "";
+      if(confirm("Загрузить данные из файла"+when+"?\nНайдено оценок: "+cnt+".\n\nТекущие данные в этом браузере будут заменены.")){
+        state = normalize(data);
+        state.mig1 = true;
+        lsSet(JSON.stringify(state));
+        editing = null; render(); markDirty(false);
+        toast("Данные загружены");
+      }
+    }catch(err){ alert("Не удалось прочитать файл: "+err.message); }
+    e.target.value = "";
+  };
+  reader.readAsText(file);
+});
+
+// ---- Toast ----
+let toastTimer = null;
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("show"), 1800);
+}
+
+// ---- Иконка для «На экран Домой» (генерируется на лету) ----
+function makeIcon(){
+  try{
+    const c = document.createElement("canvas"); c.width=c.height=180;
+    const x = c.getContext("2d");
+    x.fillStyle = "#883b30"; x.fillRect(0,0,180,180);
+    x.strokeStyle = "#c6a54e"; x.lineWidth = 5;
+    x.strokeRect(14,14,152,152);
+    x.fillStyle = "#e8d9b5"; x.textAlign="center"; x.textBaseline="middle";
+    x.font = "104px Georgia, serif";
+    x.fillText("❦", 90, 96);
+    const url = c.toDataURL("image/png");
+    let l = document.querySelector('link[rel="apple-touch-icon"]');
+    if(!l){ l = document.createElement("link"); l.rel="apple-touch-icon"; document.head.appendChild(l); }
+    l.href = url;
+    let f = document.querySelector('link[rel="icon"]');
+    if(!f){ f = document.createElement("link"); f.rel="icon"; document.head.appendChild(f); }
+    f.href = url;
+  }catch(e){}
+}
+
+searchEl.addEventListener("input",render);
+sortEl.addEventListener("change",render);
+
+markDirty(false);
+makeIcon();
+render();
+</script>
+
+</body></html>
