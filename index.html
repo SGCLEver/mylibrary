@@ -300,6 +300,7 @@ const SEED = [
 const LS_KEY = "readingListV1";
 const SYNC_TOKEN_KEY = "readingListSyncToken";
 const SYNC_GIST_KEY  = "readingListGistId";
+const PUBLIC_GIST_ID = "0e90f9f1ab99855c2772a7da5982a5f8"; // публичное чтение библиотеки без ключа
 
 function lsGet(){ try{ return localStorage.getItem(LS_KEY); }catch(e){ return null; } }
 function lsSet(v){ try{ localStorage.setItem(LS_KEY, v); }catch(e){} }
@@ -665,6 +666,26 @@ function schedulePush(){
   clearTimeout(pushTimer);
   pushTimer = setTimeout(pushSync, 1500);
 }
+async function pullPublic(){
+  const gid = syncGistId || PUBLIC_GIST_ID;
+  if(!gid) return;
+  try{
+    const r = await fetch("https://api.github.com/gists/"+gid, {headers:{"Accept":"application/vnd.github+json"}});
+    if(!r.ok) return;
+    const g = await r.json();
+    const f = g.files && g.files["library.json"];
+    if(!f) return;
+    let content = f.content;
+    if(f.truncated && f.raw_url){ content = await (await fetch(f.raw_url)).text(); }
+    const remote = JSON.parse(content);
+    if((remote.updated||0) > (state.updated||0)){
+      state = normalize(remote); state.mig1 = true;
+      lsSet(JSON.stringify(state));
+      editing = null; render(); markDirty(false);
+      setSyncStatus("Обновлено ✓");
+    }
+  }catch(e){}
+}
 async function pullSync(pushIfLocalNewer){
   if(!syncConnected() || !syncGistId) return;
   try{
@@ -714,7 +735,7 @@ function updateSyncUI(){
 }
 function initSync(){
   syncToken = lsGetRaw(SYNC_TOKEN_KEY);
-  syncGistId = lsGetRaw(SYNC_GIST_KEY);
+  syncGistId = lsGetRaw(SYNC_GIST_KEY) || PUBLIC_GIST_ID;
   updateSyncUI();
   document.getElementById("syncToggle").addEventListener("click", ()=>document.getElementById("syncPanel").classList.toggle("open"));
   document.getElementById("syncConnectBtn").addEventListener("click", connectSync);
@@ -722,8 +743,8 @@ function initSync(){
   document.getElementById("syncCloseBtn").addEventListener("click", ()=>document.getElementById("syncPanel").classList.remove("open"));
   document.getElementById("syncNowBtn").addEventListener("click", ()=>pullSync(true));
   document.getElementById("syncDisconnectBtn").addEventListener("click", disconnectSync);
-  if(syncConnected()) pullSync(false);
-  window.addEventListener("focus", ()=>{ if(syncConnected()) pullSync(false); });
+  if(syncConnected()) pullSync(false); else pullPublic();
+  window.addEventListener("focus", ()=>{ if(syncConnected()) pullSync(false); else pullPublic(); });
 }
 
 // ---- Иконка для «На экран Домой» ----
