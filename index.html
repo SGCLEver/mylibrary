@@ -63,6 +63,11 @@
   .btn.primary{background:var(--gold);border-color:var(--gold);color:#fff}
   .btn.primary:hover{background:var(--gold2);border-color:var(--gold2)}
   .btn.dirty{box-shadow:0 0 0 3px rgba(169,133,47,.28)}
+  .more-wrap{position:relative;display:inline-block}
+  .more-toggle{font-size:18px;line-height:1;letter-spacing:1px;padding:9px 16px}
+  .more-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;z-index:40;background:var(--paper);border:1px solid var(--line2);border-radius:var(--radius);box-shadow:0 10px 30px rgba(90,68,40,.16);padding:8px;flex-direction:column;gap:8px;min-width:220px}
+  .more-menu.open{display:flex}
+  .more-menu .btn{width:100%;text-align:left}
 
   .add-panel{background:var(--paper);border:1px dashed var(--gold);border-radius:var(--radius);padding:22px;margin-bottom:22px;display:none;box-shadow:0 8px 24px rgba(90,68,40,.06)}
   .add-panel.open{display:block}
@@ -159,9 +164,14 @@
     </select>
     <button class="btn" id="addToggle">+ Добавить</button>
     <button class="btn ghost" id="syncToggle">☁ Синхронизация<span id="syncBadge" style="display:none;color:#3a7d3a;margin-left:6px">●</span></button>
-    <button class="btn primary" id="saveBtn">💾 Сохранить в файл</button>
-    <button class="btn ghost" id="exportBtn">⬇ Скачать копию</button>
-    <button class="btn ghost" id="importBtn">⬆ Загрузить копию</button>
+    <div class="more-wrap">
+      <button class="btn ghost more-toggle" id="moreToggle" title="Ещё" aria-label="Ещё">⋯</button>
+      <div class="more-menu" id="moreMenu">
+        <button class="btn primary" id="saveBtn">💾 Сохранить в файл</button>
+        <button class="btn ghost" id="exportBtn">⬇ Скачать копию</button>
+        <button class="btn ghost" id="importBtn">⬆ Загрузить копию</button>
+      </div>
+    </div>
     <input type="file" id="importFile" accept=".html,.json" style="display:none">
   </div>
 
@@ -605,6 +615,13 @@ document.getElementById("importFile").addEventListener("change", e=>{
   };
   reader.readAsText(file);
 });
+
+// ---- Меню «Ещё» (три точки) ----
+const moreToggle = document.getElementById("moreToggle");
+const moreMenu = document.getElementById("moreMenu");
+moreToggle.addEventListener("click", e=>{ e.stopPropagation(); moreMenu.classList.toggle("open"); });
+document.addEventListener("click", e=>{ if(!moreMenu.contains(e.target) && e.target!==moreToggle) moreMenu.classList.remove("open"); });
+moreMenu.querySelectorAll(".btn").forEach(b=> b.addEventListener("click", ()=> moreMenu.classList.remove("open")));
 
 // ---- Toast ----
 let toastTimer = null;
