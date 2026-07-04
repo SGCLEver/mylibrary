@@ -148,8 +148,13 @@
     <input type="search" id="search" placeholder="Поиск по названию или автору…">
     <select id="sort">
       <option value="default">По порядку</option>
-      <option value="title">По названию</option>
+      <option value="title" selected>По названию</option>
       <option value="author">По автору</option>
+      <option value="rating-desc">Оценка ↓</option>
+      <option value="rating-asc">Оценка ↑</option>
+    </select>
+    <select id="sortAuthors" style="display:none">
+      <option value="name">По имени</option>
       <option value="rating-desc">Оценка ↓</option>
       <option value="rating-asc">Оценка ↑</option>
     </select>
@@ -538,7 +543,10 @@ function renderAuthors(){
   const q = searchEl.value.trim().toLowerCase();
   let authors = authorStats();
   if(q) authors = authors.filter(a=> a.author.toLowerCase().includes(q));
-  authors.sort((x,y)=> (y.rating||0)-(x.rating||0) || y.rated-x.rated || x.author.localeCompare(y.author,"ru"));
+  const sa = (document.getElementById("sortAuthors")||{}).value || "name";
+  if(sa==="rating-desc") authors.sort((x,y)=> (y.rating||0)-(x.rating||0) || x.author.localeCompare(y.author,"ru"));
+  else if(sa==="rating-asc") authors.sort((x,y)=> (x.rating||0)-(y.rating||0) || x.author.localeCompare(y.author,"ru"));
+  else authors.sort((x,y)=> x.author.localeCompare(y.author,"ru"));
   listEl.innerHTML = "";
   if(authors.length===0){ listEl.innerHTML='<div class="empty">Ничего не найдено.</div>'; }
   authors.forEach((a,i)=>{
@@ -595,6 +603,7 @@ function setView(v){
   document.getElementById("navAuthors").classList.toggle("active", v==="authors");
   document.getElementById("addToggle").style.display = v==="books" ? "" : "none";
   document.getElementById("sort").style.display = v==="books" ? "" : "none";
+  document.getElementById("sortAuthors").style.display = v==="authors" ? "" : "none";
   searchEl.value="";
   searchEl.placeholder = v==="books" ? "Поиск по названию или автору…" : "Поиск по автору…";
   window.scrollTo({top:0,behavior:"smooth"});
@@ -881,6 +890,7 @@ function makeIcon(){
 
 searchEl.addEventListener("input",render);
 sortEl.addEventListener("change",render);
+document.getElementById("sortAuthors").addEventListener("change",render);
 
 markDirty(false);
 makeIcon();
