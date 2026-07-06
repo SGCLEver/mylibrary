@@ -55,7 +55,7 @@
 
   .sectionmark{text-align:center;color:var(--gold-hi);letter-spacing:11px;font-size:12px;margin:22px 0 8px;text-indent:11px}
 
-  .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 6px;animation:rise .8s .1s var(--ease) both}
+  .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 6px;position:relative;z-index:30;animation:rise .8s .1s var(--ease) both}
   .search{position:relative;flex:1 1 200px;min-width:160px}
   .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
   .search input[type=search]{width:100%;background:var(--paper);border:1px solid var(--line2);border-radius:11px;padding:11px 14px 11px 38px;font-family:var(--sans);font-size:13.5px;color:var(--ink);outline:none;transition:border-color .25s,box-shadow .25s}
@@ -73,7 +73,7 @@
   .btn.dirty{box-shadow:0 0 0 3px rgba(200,162,74,.35)}
   .more-wrap{position:relative;display:inline-block}
   .more-toggle{font-size:16px;line-height:1;padding:11px 14px}
-  .more-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;z-index:40;background:var(--paper);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 12px 30px -10px rgba(120,90,40,.3);padding:8px;flex-direction:column;gap:8px;min-width:220px}
+  .more-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;z-index:50;background:var(--paper);border:1px solid var(--line2);border-radius:var(--r);box-shadow:0 12px 30px -10px rgba(120,90,40,.3);padding:8px;flex-direction:column;gap:8px;min-width:220px}
   .more-menu.open{display:flex}
   .more-menu .btn{width:100%;justify-content:flex-start}
 
@@ -100,9 +100,8 @@
   .book .author{font-size:10px;letter-spacing:2.4px;text-transform:uppercase;color:var(--muted);margin-top:7px}
   .rate{min-width:0}
   .rate .row{display:flex;align-items:center;gap:12px;justify-content:flex-end}
-  .rate input[type=range]{-webkit-appearance:none;appearance:none;width:120px;height:5px;border-radius:5px;background:linear-gradient(90deg,var(--gc,var(--gold)) var(--p,0%),var(--line2) var(--p,0%));outline:none;cursor:pointer}
-  .rate input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--gold-d);border:3px solid var(--paper);box-shadow:0 1px 4px rgba(120,90,40,.45);cursor:pointer}
-  .rate input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold-d);border:3px solid var(--paper);box-shadow:0 1px 4px rgba(120,90,40,.45);cursor:pointer}
+  .rate .prog{width:78px;height:5px;border-radius:5px;background:var(--line2);position:relative;overflow:hidden;flex:none}
+  .rate .prog i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;transition:width .3s var(--ease),background .3s}
   .rate .score{font-family:var(--mono);font-weight:500;font-size:15px;min-width:46px;text-align:right;color:var(--gold-ink);font-feature-settings:"tnum"}
   .rate .score.unset{color:var(--muted2);font-family:var(--serif-d);font-style:italic;font-size:17px}
   .rate .score .m{color:var(--muted2);font-size:11px}
@@ -115,9 +114,15 @@
   .book.editing{grid-template-columns:1fr;gap:10px}
   .edit-form{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:2px 0}
   .edit-form .acts{margin-top:0}
-  .af-range{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--line2);outline:none;cursor:pointer}
-  .af-range::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--gold-d);border:3px solid var(--paper);box-shadow:0 1px 4px rgba(120,90,40,.45);cursor:pointer}
-  .af-range::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold-d);border:3px solid var(--paper);cursor:pointer}
+  .af-range{-webkit-appearance:none;appearance:none;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--gc,var(--gold)) var(--p,0%),var(--line2) var(--p,0%));outline:none;cursor:pointer}
+  .af-range::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--gold-d);border:3px solid var(--paper);box-shadow:0 1px 5px rgba(120,90,40,.5);cursor:pointer}
+  .af-range::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--gold-d);border:3px solid var(--paper);box-shadow:0 1px 5px rgba(120,90,40,.5);cursor:pointer}
+  .rate-edit{display:flex;align-items:center;gap:13px;flex:1 1 100%;min-width:220px;padding:4px 2px}
+  .rate-edit .re-lbl{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  .rate-edit .af-range{flex:1}
+  .rate-edit .val{font-family:var(--mono);font-weight:500;font-size:16px;color:var(--gold-ink);min-width:52px;text-align:right}
+  .rate-edit .val.unset{font-family:var(--serif-d);font-style:italic;color:var(--muted2)}
+  .rate-edit .val .m{color:var(--muted2);font-size:12px}
 
   .empty{text-align:center;color:var(--muted);font-family:var(--serif-d);font-style:italic;font-size:20px;padding:50px 20px}
   footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:28px;font-family:var(--sans);line-height:1.7}
@@ -157,7 +162,7 @@
     <h1>Что я прочитал</h1>
     <div class="sub">собрание прочитанного</div>
     <div class="flourish"><span>✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</span></div>
-    <p class="intro">Каждый корешок — глава пройденного пути. Здесь я храню оценки, авторов и тихую радость дочитанного.</p>
+    <p class="intro">Каждый корешок — глава пройденного пути. Здесь я храню оценки, авторов и тихую радость прочитанного.</p>
   </header>
 
   <div class="stats">
@@ -418,6 +423,21 @@ function starStr(n){ if(!n) return ""; const full = Math.round(n/2); return "★
 function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function goldTier(r){ if(!r) return "var(--line2)"; if(r>=8) return "var(--gold-d)"; if(r>=5) return "var(--gold)"; return "var(--gold-l)"; }
 
+// Режим владельца: правки и добавление доступны только когда введён ключ синхронизации.
+function isOwner(){ return !!syncToken; }
+function updateOwnerUI(){
+  const own = isOwner();
+  document.body.classList.toggle('owner', own);
+  const mw = document.querySelector('.more-wrap'); if(mw) mw.style.display = own ? '' : 'none';
+  const reset = document.getElementById('resetAll'); if(reset) reset.style.display = own ? '' : 'none';
+  const at = document.getElementById('addToggle'); if(at) at.style.display = (own && view==='books') ? '' : 'none';
+  if(!own){
+    const ap=document.getElementById('addPanel'); if(ap) ap.classList.remove('open');
+    const mm=document.getElementById('moreMenu'); if(mm) mm.classList.remove('open');
+    if(editing!==null){ editing=null; }
+  }
+}
+
 function markDirty(v){
   dirty = v;
   const b = document.getElementById("saveBtn");
@@ -426,6 +446,7 @@ function markDirty(v){
 
 function render(){
   if(view==="authors"){ renderAuthors(); return; }
+  const own = isOwner();
   const q = searchEl.value.trim().toLowerCase();
   let books = allBooks();
   if(q){ books = books.filter(b=> (b.t+" "+b.a).toLowerCase().includes(q)); }
@@ -443,13 +464,18 @@ function render(){
     const r = state.ratings[b.id] || 0;
     const card = document.createElement("div");
     card.className = "book";
-    if(editing===b.id){
+    if(editing===b.id && own){
       card.classList.add("editing");
+      const pct = (r/10)*100;
       card.innerHTML =
         '<div class="edit-form">'+
           '<input type="text" class="ef-title" value="'+escapeHtml(b.t)+'" placeholder="Название">'+
           '<input type="text" class="ef-author" value="'+escapeHtml(b.a)+'" placeholder="Автор">'+
           '<label class="chk"><input type="checkbox" class="ef-eng" '+(b.eng?'checked':'')+'> на английском</label>'+
+          '<label class="rate-edit"><span class="re-lbl">Оценка</span>'+
+            '<input type="range" min="0" max="10" step="1" class="af-range ef-rate" value="'+r+'" style="--p:'+pct+'%;--gc:'+goldTier(r)+'">'+
+            '<span class="val ef-rate-val '+(r?'':'unset')+'">'+(r? r+'<span class="m">/10</span>' : 'нет')+'</span>'+
+          '</label>'+
           '<div class="acts">'+
             '<button class="btn ef-save">Сохранить</button>'+
             '<button class="btn ghost ef-cancel">Отмена</button>'+
@@ -465,12 +491,12 @@ function render(){
         '</div>'+
         '<div class="rate">'+
           '<div class="row">'+
-            '<input type="range" min="0" max="10" step="1" value="'+r+'" data-id="'+escapeHtml(b.id)+'" style="--p:'+pct+'%;--gc:'+goldTier(r)+'">'+
+            '<div class="prog"><i style="width:'+pct+'%;background:'+goldTier(r)+'"></i></div>'+
             '<span class="score '+(r?'set':'unset')+'">'+(r? r+'<span class="m">/10</span>' : 'нет')+'</span>'+
-            '<button class="icon-btn edit" title="Изменить" data-edit="'+escapeHtml(b.id)+'">✎</button>'+
-            '<button class="icon-btn del" title="Удалить" data-del="'+escapeHtml(b.id)+'">×</button>'+
+            (own?
+              '<button class="icon-btn edit" title="Изменить" data-edit="'+escapeHtml(b.id)+'">✎</button>'+
+              '<button class="icon-btn del" title="Удалить" data-del="'+escapeHtml(b.id)+'">×</button>' : '')+
           '</div>'+
-          '<div class="stars">'+starStr(r)+'</div>'+
         '</div>';
     }
     listEl.appendChild(card);
@@ -481,19 +507,13 @@ function render(){
 }
 
 function bindActions(){
-  listEl.querySelectorAll('input[type=range]').forEach(inp=>{
+  listEl.querySelectorAll('.ef-rate').forEach(inp=>{
     inp.addEventListener('input', e=>{
-      const id = e.target.dataset.id;
       const v = +e.target.value;
       e.target.style.setProperty('--p', (v/10*100)+'%');
       e.target.style.setProperty('--gc', goldTier(v));
-      const score = e.target.parentElement.querySelector('.score');
-      score.innerHTML = v? v+'<span class="m">/10</span>' : 'нет';
-      score.className = 'score '+(v?'set':'unset');
-      e.target.closest('.rate').querySelector('.stars').textContent = starStr(v);
-      if(v) state.ratings[id]=v; else delete state.ratings[id];
-      saveState(state);
-      updateStats();
+      const lab = e.target.parentElement.querySelector('.ef-rate-val');
+      if(lab){ lab.className = 'val ef-rate-val '+(v?'':'unset'); lab.innerHTML = v? v+'<span class="m">/10</span>' : 'нет'; }
     });
   });
   listEl.querySelectorAll('[data-edit]').forEach(btn=>{
@@ -526,6 +546,8 @@ function saveEdit(){
   const eng = form.querySelector('.ef-eng').checked;
   if(!t){ alert("Введите название"); return; }
   const id = editing;
+  const rEl = form.querySelector('.ef-rate');
+  if(rEl){ const rv = Math.round(+rEl.value); if(rv) state.ratings[id]=rv; else delete state.ratings[id]; }
   const custom = state.custom.find(x=>x.id===id);
   if(custom){ custom.t=t; custom.a=a||"—"; custom.eng=eng; }
   else{ state.edits[id] = {t, a:a||"—", eng}; }
@@ -566,6 +588,7 @@ function authorStats(){
 }
 
 function renderAuthors(){
+  const own = isOwner();
   const q = searchEl.value.trim().toLowerCase();
   let authors = authorStats();
   if(q) authors = authors.filter(a=> a.author.toLowerCase().includes(q));
@@ -577,15 +600,16 @@ function renderAuthors(){
   if(authors.length===0){ listEl.innerHTML='<div class="empty">Ничего не найдено.</div>'; }
   authors.forEach((a,i)=>{
     const card=document.createElement("div"); card.className="book";
-    if(editing==="A:"+a.author){
+    if(editing==="A:"+a.author && own){
       card.classList.add("editing");
       const val = (a.hasOverride? a.rating : a.auto)||0;
+      const pct = (val/10)*100;
       card.innerHTML =
         '<div class="edit-form">'+
-          '<div style="flex:1 1 100%;font-family:var(--serif-d);font-size:19px">'+escapeHtml(a.author)+'</div>'+
-          '<label class="chk" style="flex:1;min-width:220px;gap:12px;color:var(--ink)">Оценка автора:'+
-            '<input type="range" min="0" max="10" step="0.1" class="af-range" value="'+val+'" style="flex:1">'+
-            '<span class="af-val" style="font-family:var(--serif-d);color:var(--accent);min-width:36px;text-align:right">'+val.toFixed(1)+'</span>'+
+          '<div style="flex:1 1 100%;font-family:var(--serif-d);font-size:20px">'+escapeHtml(a.author)+'</div>'+
+          '<label class="rate-edit"><span class="re-lbl">Оценка автора</span>'+
+            '<input type="range" min="0" max="10" step="0.1" class="af-range" value="'+val+'" style="--p:'+pct+'%;--gc:'+goldTier(Math.round(val))+'">'+
+            '<span class="af-val val '+(val?'':'unset')+'">'+val.toFixed(1)+'<span class="m">/10</span></span>'+
           '</label>'+
           '<div class="acts">'+
             '<button class="btn af-save">Сохранить</button>'+
@@ -595,14 +619,16 @@ function renderAuthors(){
         '</div>';
     }else{
       const rTxt = a.rated? a.rating.toFixed(1)+'<span class="m">/10</span>' : 'нет';
+      const pct = a.rated? (a.rating/10)*100 : 0;
       card.innerHTML =
         '<div class="num-badge">'+(i+1)+'</div>'+
         '<div class="meta"><div class="title">'+escapeHtml(a.author)+(a.hasOverride?' <span class="lang-tag manual">вручную</span>':'')+'</div>'+
         '<div class="author">'+a.works+' '+worksWord(a.works)+' · оценено '+a.rated+'</div></div>'+
         '<div class="rate"><div class="row">'+
+        '<div class="prog"><i style="width:'+pct+'%;background:'+goldTier(Math.round(a.rating))+'"></i></div>'+
         '<span class="score '+(a.rated?'set':'unset')+'">'+rTxt+'</span>'+
-        '<button class="icon-btn edit" title="Изменить оценку автора" data-aedit="'+escapeHtml(a.author)+'">✎</button>'+
-        '</div><div class="stars">'+starStr(Math.round(a.rating))+'</div></div>';
+        (own? '<button class="icon-btn edit" title="Изменить оценку автора" data-aedit="'+escapeHtml(a.author)+'">✎</button>' : '')+
+        '</div></div>';
     }
     listEl.appendChild(card);
   });
@@ -611,7 +637,12 @@ function renderAuthors(){
 
 function bindAuthorActions(){
   listEl.querySelectorAll('[data-aedit]').forEach(btn=> btn.addEventListener('click', e=>{ editing="A:"+e.currentTarget.dataset.aedit; render(); }));
-  listEl.querySelectorAll('.af-range').forEach(rng=> rng.addEventListener('input', ()=>{ const v=listEl.querySelector('.af-val'); if(v) v.textContent=(+rng.value).toFixed(1); }));
+  listEl.querySelectorAll('.af-range').forEach(rng=> rng.addEventListener('input', ()=>{
+    const val=+rng.value;
+    rng.style.setProperty('--p',(val/10*100)+'%');
+    rng.style.setProperty('--gc',goldTier(Math.round(val)));
+    const v=listEl.querySelector('.af-val'); if(v){ v.className='af-val val '+(val?'':'unset'); v.innerHTML=val.toFixed(1)+'<span class="m">/10</span>'; }
+  }));
   listEl.querySelectorAll('.af-save').forEach(btn=> btn.addEventListener('click', ()=>{
     const a=editing.slice(2); const rng=listEl.querySelector('.af-range');
     state.authorEdits[a]= Math.round((+rng.value)*10)/10;
@@ -628,7 +659,7 @@ function setView(v){
   view=v; editing=null;
   document.getElementById("navBooks").classList.toggle("active", v==="books");
   document.getElementById("navAuthors").classList.toggle("active", v==="authors");
-  document.getElementById("addToggle").style.display = v==="books" ? "" : "none";
+  updateOwnerUI();
   document.getElementById("sort").style.display = v==="books" ? "" : "none";
   document.getElementById("sortAuthors").style.display = v==="authors" ? "" : "none";
   searchEl.value="";
@@ -884,6 +915,8 @@ function updateSyncUI(){
   const b=document.getElementById("syncBadge"); if(b) b.style.display=on?"inline-block":"none";
   const c=document.getElementById("syncConnectedBox"); if(c) c.style.display=on?"block":"none";
   const d=document.getElementById("syncDisconnected"); if(d) d.style.display=on?"none":"block";
+  updateOwnerUI();
+  render();
 }
 function initSync(){
   syncToken = lsGetRaw(SYNC_TOKEN_KEY);
