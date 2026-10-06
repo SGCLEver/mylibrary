@@ -154,26 +154,244 @@
     .ribbon{right:16px}
   }
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+  /* ===== v2: карточки на золоте, «Сейчас читаю», подсветка ===== */
+  :root{
+    --card-bg:linear-gradient(180deg,#fffdf8 0%,#fbf5e8 100%);
+    --card-bd:#e3d4b2;
+    --card-sh:inset 0 0 0 3px rgba(255,253,247,.95),inset 0 0 0 4px rgba(200,162,74,.17),0 1px 2px rgba(120,90,40,.06),0 10px 22px -16px rgba(120,90,40,.42);
+    --card-sh-h:inset 0 0 0 3px rgba(255,253,247,.95),inset 0 0 0 4px rgba(200,162,74,.34),0 2px 4px rgba(120,90,40,.08),0 18px 32px -16px rgba(140,106,57,.5);
+  }
+  body{background:radial-gradient(120% 70% at 50% -10%,#fffaf0 0%,#f8f1e2 42%,#f1e6cf 100%) fixed}
+  .ribbon{position:absolute}
+  .eyebrow{background:linear-gradient(90deg,var(--gold-d),var(--gold-hi),var(--gold-d));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .emblem svg{transition:transform .5s var(--ease)}
+  .flourish span{transition:letter-spacing .5s var(--ease)}
+  .sectionmark{transition:letter-spacing .5s var(--ease),color .3s}
+
+  .stats{background:var(--card-bd);border-color:var(--card-bd);box-shadow:0 1px 2px rgba(120,90,40,.06),0 12px 26px -18px rgba(120,90,40,.45)}
+  .stat{background:var(--card-bg);transition:background .3s}
+  .stat .num{background:linear-gradient(180deg,var(--gold-hi),var(--gold-d) 72%);-webkit-background-clip:text;background-clip:text;color:transparent;transition:transform .3s var(--ease)}
+  .stat .num::after{transition:width .35s var(--ease),opacity .35s}
+  .stat .lbl{transition:color .3s}
+
+  #list{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+  .book{background:var(--card-bg);border:1px solid var(--card-bd);border-radius:var(--r);box-shadow:var(--card-sh);padding:18px 22px 18px 14px;transition:transform .28s var(--ease),box-shadow .28s,border-color .28s}
+  .book:first-child{border-top:1px solid var(--card-bd)}
+  .book:hover{background:var(--card-bg)}
+  .book::before{left:-1px;top:16px;bottom:16px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,var(--gold-hi),var(--gold-d))}
+  .book::after{content:"";position:absolute;left:26px;right:26px;top:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-hi),transparent);opacity:0;transition:opacity .3s}
+  .book .num-badge{color:var(--gold-d)}
+  .book .num-badge::after{content:"";display:block;width:12px;height:2px;background:var(--gold-hi);opacity:.5;border-radius:2px;margin:6px auto 0;transition:width .3s var(--ease),opacity .3s}
+  .book .title{transition:color .25s}
+  .book.just-added{animation:justAdded 2.4s var(--ease)}
+  @keyframes justAdded{0%,35%{box-shadow:var(--card-sh-h),0 0 0 4px rgba(200,162,74,.4)}100%{box-shadow:var(--card-sh)}}
+
+  .rate .row{gap:10px}
+  .rate .prog{width:108px;height:6px;border-radius:6px;box-shadow:inset 0 1px 1px rgba(120,90,40,.12)}
+  .rate .prog i{border-radius:6px}
+  .rate .score{font-size:20px;min-width:54px}
+  .rate .score .m{font-size:13px}
+  .rate .score.unset{font-size:19px}
+
+  .btn.ghost,.btn:not(.primary){background:linear-gradient(180deg,#fffdf8,#f8f0de)}
+  .add-panel,.more-menu{background:var(--card-bg);border-color:var(--card-bd);box-shadow:var(--card-sh)}
+  .bottombar .seg{background:var(--card-bg);border-color:var(--card-bd)}
+
+  .reading{margin:0 0 26px;animation:rise .8s .08s var(--ease) both}
+  .sec-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .sec-title{display:flex;align-items:center;gap:11px;font-size:11px;letter-spacing:4px;text-transform:uppercase;font-weight:600;color:var(--gold-d)}
+  .sec-title::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--gold-hi);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(200,162,74,.55)}70%{box-shadow:0 0 0 9px rgba(200,162,74,0)}100%{box-shadow:0 0 0 0 rgba(200,162,74,0)}}
+  .btn.small{padding:8px 13px;font-size:12px}
+  .reading-add{display:none;background:var(--card-bg);border:1px solid var(--card-bd);border-radius:var(--r);box-shadow:var(--card-sh);padding:18px;margin-bottom:12px}
+  .reading-add.open{display:block}
+  .reading-add input[type=text]{flex:1;min-width:170px;font-family:var(--sans);font-size:14px;padding:11px 15px;border:1px solid var(--line2);border-radius:10px;background:#fff;color:var(--ink);outline:none}
+  .reading-add input[type=text]:focus{border-color:var(--gold)}
+  #readingList{display:flex;flex-direction:column;gap:10px}
+  .rcard{position:relative;display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:16px;padding:16px 18px 16px 16px;background:linear-gradient(135deg,#fffdf7 0%,#fbf0d6 100%);border:1px solid var(--gold-l);border-radius:var(--r);box-shadow:var(--card-sh);transition:transform .28s var(--ease),box-shadow .28s,border-color .28s}
+  .rc-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--gold-hi),var(--gold-d));color:#fffaf0;box-shadow:0 4px 10px -4px rgba(140,106,57,.6),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .35s var(--ease)}
+  .rc-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .rcard .meta{min-width:0}
+  .rcard .title{font-family:var(--serif-d);font-weight:600;font-size:clamp(20px,5vw,23px);line-height:1.15;color:var(--ink)}
+  .rcard .author{font-size:10px;letter-spacing:2.4px;text-transform:uppercase;color:var(--muted);margin-top:6px}
+  .rcard .lang-tag{display:inline-flex;align-items:center;font-family:var(--sans);font-weight:600;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);border:1px solid var(--gold-l);border-radius:4px;padding:2px 5px;margin-left:9px;vertical-align:middle;transform:translateY(-2px)}
+  .rc-acts{display:flex;align-items:center;gap:6px}
+  .rc-finish{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:12px;border-top:1px dashed var(--line2)}
+  .rc-finish .acts{margin-top:0}
+  .reading-empty{text-align:center;font-family:var(--serif-d);font-style:italic;font-size:17px;color:var(--muted);padding:18px;border:1px dashed var(--gold-l);border-radius:var(--r);background:rgba(255,253,246,.6)}
+
+  @media(hover:hover){
+    header.top:hover .emblem svg{transform:translateY(-2px) scale(1.07)}
+    .flourish:hover span{letter-spacing:7px}
+    .sectionmark:hover{letter-spacing:15px;color:var(--gold)}
+    .stat:hover{background:linear-gradient(180deg,#fffefb,#fcf1d8)}
+    .stat:hover .num{transform:translateY(-2px)}
+    .stat:hover .num::after{width:30px;opacity:1}
+    .stat:hover .lbl{color:var(--gold-d)}
+    .book:hover{transform:translateY(-2px);box-shadow:var(--card-sh-h);border-color:var(--gold-l)}
+    .book:hover::after{opacity:.85}
+    .book:hover .num-badge::after{width:20px;opacity:1}
+    .book:hover .title{color:var(--gold-ink)}
+    .book:hover .rate .prog i{filter:brightness(1.08) saturate(1.15)}
+    .book.editing:hover{transform:none}
+    .rcard:hover{transform:translateY(-2px);box-shadow:var(--card-sh-h);border-color:var(--gold)}
+    .rcard:hover .rc-icon{transform:rotate(-6deg) scale(1.05)}
+    .search input[type=search]:hover,.toolbar select:hover,.reading-add input[type=text]:hover,.add-panel input[type=text]:hover{border-color:var(--gold-l);background-color:#fffdf6;box-shadow:0 2px 8px -4px rgba(140,106,57,.3)}
+    .btn:not(.primary):hover{border-color:var(--gold-l);color:var(--gold-ink);background:linear-gradient(180deg,#fffefa,#fbf1d9)}
+    .btn.primary:hover{filter:brightness(1.06)}
+    .navbtn:not(.active):hover{background:rgba(200,162,74,.13)}
+    .reading-empty:hover{border-color:var(--gold);color:var(--gold-d)}
+    footer .reset:hover{color:var(--gold-ink)}
+  }
+  @media(max-width:560px){
+    .book{padding:16px 16px 16px 12px}
+    .rate .score{font-size:22px;min-width:62px}
+    .rate .score.unset{font-size:20px}
+    .rate .score .m{font-size:14px}
+    .rcard{grid-template-columns:40px 1fr;gap:4px 12px;padding:14px}
+    .rc-icon{width:40px;height:40px;border-radius:11px}
+    .rc-acts{grid-column:1 / -1;margin-top:10px}
+    .rc-acts .btn{flex:1;justify-content:center}
+    .ribbon{right:16px}
+  }
+
+  /* ===== v3: мобильные плашки и центрированные настройки ===== */
+  @media(max-width:560px){
+    .book{grid-template-columns:24px 1fr;gap:0 12px;padding:18px 18px 16px 12px;align-items:start}
+    .book .num-badge{font-size:11px;padding-top:9px}
+    .book .title{font-size:25px;line-height:1.14;letter-spacing:.1px}
+    .book .author{font-size:11.5px;letter-spacing:1.7px;margin-top:7px;color:#8b8070}
+    .book .lang-tag{font-size:9px}
+    .rate{grid-column:2 / -1;margin-top:14px}
+    .rate .row{gap:10px}
+    .rate .prog{height:5px}
+    .rate .score{font-size:17px;min-width:48px}
+    .rate .score.unset{font-size:17px}
+    .rate .score .m{font-size:11px}
+    .rate .icon-btn{width:32px;height:32px}
+    .rcard .title{font-size:24px}
+    .rcard .author{font-size:11px;letter-spacing:1.6px}
+    .toolbar{gap:8px;justify-content:center}
+    .toolbar .search{flex:1 1 100%}
+    .toolbar select,.toolbar #addToggle{flex:1 1 calc(50% - 4px)}
+    .toolbar #syncToggle{flex:1 1 0;min-width:150px}
+    .toolbar .more-wrap{flex:0 0 50px}
+    .toolbar .more-wrap .btn{width:100%}
+    .toolbar .btn,.toolbar select{height:46px;justify-content:center}
+    .toolbar select{text-align:center;text-align-last:center;padding:0 30px}
+    .search input[type=search]{height:46px}
+  }
+
+  /* ===== v4: плашка статистики, кнопки справа, «Сейчас читаю» ===== */
+  .stats{grid-template-columns:repeat(4,1fr);gap:0;background:var(--card-bg);border:1px solid var(--card-bd);border-radius:var(--r);box-shadow:var(--card-sh);overflow:hidden;position:relative;margin:30px 0 26px;padding:6px 0;transition:box-shadow .3s,border-color .3s}
+  .stats::before,.stats::after{content:"";position:absolute;left:18px;right:18px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-l) 14%,var(--gold-l) 86%,transparent);pointer-events:none}
+  .stats::before{top:8px}.stats::after{bottom:8px}
+  .stat{background:none;padding:19px 6px 17px;position:relative}
+  .stat+.stat::before{content:"";position:absolute;left:0;top:26%;bottom:26%;width:1px;background:linear-gradient(transparent,var(--gold-l),transparent)}
+  .stat .num{font-size:clamp(25px,7vw,30px)}
+  .stat .num::after{display:none}
+  .stat .lbl{font-family:var(--serif-d);font-style:italic;text-transform:lowercase;letter-spacing:0;font-size:15px;margin-top:3px;color:var(--muted)}
+  @media(hover:hover){
+    .stats:hover{box-shadow:var(--card-sh-h);border-color:var(--gold-l)}
+    .stat:hover{background:radial-gradient(70% 80% at 50% 50%,rgba(200,162,74,.11),transparent 72%)}
+    .stat:hover .lbl{color:var(--gold-d)}
+  }
+
+  .edit-form .acts,.rc-finish .acts,.add-panel .acts,.reading-add .acts{flex:1 1 100%;flex-direction:row-reverse;justify-content:flex-start}
+  .edit-form .acts .btn,.rc-finish .acts .btn,.add-panel .acts .btn,.reading-add .acts .btn{min-width:112px;justify-content:center}
+
+  .sec-head{padding:0 0 0 16px}
+
+  @media(max-width:560px){
+    .stats{grid-template-columns:repeat(4,1fr);margin:22px 0 22px;padding:5px 0}
+    .stats::before,.stats::after{left:12px;right:12px}
+    .stats::before{top:7px}.stats::after{bottom:7px}
+    .stat{padding:16px 2px 14px}
+    .stat .num{font-size:24px}
+    .stat .lbl{font-size:13px}
+    .sec-head{padding-left:14px}
+    .edit-form .acts .btn,.rc-finish .acts .btn,.add-panel .acts .btn,.reading-add .acts .btn{flex:1 1 0;min-width:0;height:46px}
+  }
+
+  /* ===== текст шапки, вариант 1: эпиграф ===== */
+  .hv1 h1 .initial{display:inline-block;font-size:1.16em;line-height:.8;background:linear-gradient(180deg,var(--gold-hi),var(--gold-d) 80%);-webkit-background-clip:text;background-clip:text;color:transparent;margin-right:1px}
+  .sub-band{display:flex;align-items:center;justify-content:center;gap:14px;max-width:340px;margin:14px auto 0;font-size:10.5px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--gold-d);text-indent:4px}
+  .sub-band::before,.sub-band::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold-l))}
+  .sub-band::after{background:linear-gradient(90deg,var(--gold-l),transparent)}
+  .epigraph{position:relative;max-width:420px;margin:30px auto 0;padding:0 18px;text-align:center}
+  .epigraph::before{content:"“";display:block;font-family:var(--serif-d);font-size:64px;line-height:.55;height:26px;color:var(--gold-hi);opacity:.85}
+  .ep-quote{font-family:var(--serif-d);font-style:italic;font-weight:500;font-size:23px;line-height:1.28;color:var(--ink-soft)}
+  .ep-note{font-family:var(--sans);font-size:12.5px;line-height:1.6;color:var(--muted);margin:12px auto 0;max-width:300px}
+  .ep-note::before{content:"";display:block;width:26px;height:1px;background:var(--gold-l);margin:0 auto 12px}
+  @media(max-width:560px){
+    .hv1 h1{font-size:44px}
+    .ep-quote{font-size:21px}
+    .ep-note{font-size:12px}
+    .epigraph{margin-top:24px}
+  }
+  .ep-quote,.ep-note,.lead-quote,.lead-note{text-wrap:balance}
+
+  /* ===== v5: единый шрифт шапки, нижняя панель поверх, золото для 10/10 ===== */
+  .ep-note{font-family:var(--serif-d);font-style:italic;font-weight:500;font-size:17px;line-height:1.45;max-width:340px}
+  .bottombar{z-index:40}
+
+  .book.masterpiece{background:linear-gradient(135deg,#fffcf6 0%,#fbf3df 55%,#f7ecd2 100%);border-color:var(--gold-l);
+    box-shadow:inset 0 0 0 3px rgba(255,251,240,.9),inset 0 0 0 4px rgba(200,162,74,.42),0 1px 2px rgba(120,90,40,.08),0 12px 26px -16px rgba(150,110,40,.55)}
+  .book.masterpiece::before{opacity:1;transform:none;width:4px;top:12px;bottom:12px;background:linear-gradient(180deg,#e6cf87,var(--gold-hi) 40%,var(--gold-d))}
+  .book.masterpiece::after{opacity:.9}
+  .book.masterpiece .num-badge{color:var(--gold-hi)}
+  .book.masterpiece .num-badge::after{width:18px;opacity:1}
+  .book.masterpiece .rate .score{background:linear-gradient(180deg,var(--gold-hi),var(--gold-d) 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .book.masterpiece .rate .score::before{content:"✦";display:inline-block;margin-right:5px;font-size:.7em;vertical-align:.18em;-webkit-text-fill-color:var(--gold-hi);color:var(--gold-hi)}
+  .book.masterpiece .rate .prog{background:#efe5cc}
+  .book.masterpiece .rate .prog i{background:linear-gradient(90deg,var(--gold-d),var(--gold-hi) 60%,#e6cf87)!important}
+  @media(hover:hover){.book.masterpiece:hover{border-color:var(--gold);box-shadow:inset 0 0 0 3px rgba(255,251,240,.9),inset 0 0 0 4px rgba(200,162,74,.55),0 2px 4px rgba(120,90,40,.1),0 18px 32px -16px rgba(150,110,40,.6)}}
+
+  .stat{-webkit-tap-highlight-color:transparent}
+  .stat:hover,.stat:active{background:radial-gradient(70% 80% at 50% 50%,rgba(200,162,74,.11),transparent 72%)}
+  .stat:hover .lbl,.stat:active .lbl{color:var(--gold-d)}
 </style>
 </head>
 <body>
 <div class="ribbon"></div>
 <div class="wrap">
-  <header class="top">
+  <header class="top hv1">
     <div class="emblem"><svg viewBox="0 0 48 32"><path d="M24 7c-3-2-8-3-12-3H4v22h8c4 0 9 1 12 3"/><path d="M24 7c3-2 8-3 12-3h8v22h-8c-4 0-9 1-12 3"/><path d="M24 7v25"/></svg></div>
     <div class="eyebrow">Личная библиотека</div>
-    <h1>Что я прочитал</h1>
-    <div class="sub">собрание прочитанного</div>
-    <div class="flourish"><span>✦&nbsp;&nbsp;❦&nbsp;&nbsp;✦</span></div>
-    <p class="intro">Каждый корешок — глава пройденного пути. Здесь я храню оценки, авторов и тихую радость прочитанного.</p>
+    <h1><span class="initial">Ч</span>то я прочитал</h1>
+    <div class="sub-band"><span>собрание прочитанного</span></div>
+    <blockquote class="epigraph">
+      <p class="ep-quote">Каждый корешок — глава пройденного пути.</p>
+      <p class="ep-note">Здесь я храню оценки, авторов и тихую радость прочитанного.</p>
+    </blockquote>
   </header>
 
   <div class="stats">
-    <div class="stat"><div class="num" id="statTotal">78</div><div class="lbl">Всего книг</div></div>
+    <div class="stat"><div class="num" id="statTotal">78</div><div class="lbl">Произведения</div></div>
     <div class="stat"><div class="num" id="statRated">75</div><div class="lbl">Оценено</div></div>
     <div class="stat"><div class="num" id="statAvg">7.1</div><div class="lbl">Средний балл</div></div>
     <div class="stat"><div class="num" id="statAuthors">40</div><div class="lbl">Авторов</div></div>
   </div>
+
+  <section class="reading" id="readingSec">
+    <div class="sec-head">
+      <span class="sec-title">Сейчас читаю</span>
+      <button class="btn small" id="readingAddToggle">+ Начать книгу</button>
+    </div>
+    <div class="reading-add" id="readingAdd">
+      <div class="fields">
+        <input type="text" id="rdTitle" placeholder="Название произведения">
+        <input type="text" id="rdAuthor" placeholder="Автор">
+        <label class="chk"><input type="checkbox" id="rdEng"> на английском</label>
+      </div>
+      <div class="acts">
+        <button class="btn primary" id="rdSave">Добавить</button>
+        <button class="btn ghost" id="rdCancel">Отмена</button>
+      </div>
+    </div>
+    <div id="readingList"></div>
+  </section>
 
   <div class="toolbar">
     <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg><input type="search" id="search" placeholder="Поиск по названию или автору…"></label>
@@ -210,7 +428,7 @@
       <label class="chk"><input type="checkbox" id="newEng"> на английском</label>
     </div>
     <div class="acts">
-      <button class="btn" id="saveBook">Добавить</button>
+      <button class="btn primary" id="saveBook">Добавить</button>
       <button class="btn ghost" id="cancelBook">Отмена</button>
     </div>
   </div>
@@ -371,7 +589,8 @@ function normalize(s){
     edits:   s.edits   || {},
     updated: s.updated || 0,
     mig1:    s.mig1    || false,
-    authorEdits: s.authorEdits || {}
+    authorEdits: s.authorEdits || {},
+    reading: s.reading || []
   };
 }
 function loadState(){ try{ return JSON.parse(lsGet()) || null; }catch(e){ return null; } }
@@ -404,6 +623,7 @@ if(!state.mig1){
 }
 
 let editing = null;
+let finishing = null;
 let dirty = false;
 let view = "books";
 
@@ -448,6 +668,7 @@ function markDirty(v){
 }
 
 function render(){
+  renderReading();
   if(view==="authors"){ renderAuthors(); return; }
   const own = isOwner();
   const q = searchEl.value.trim().toLowerCase();
@@ -467,6 +688,8 @@ function render(){
     const r = state.ratings[b.id] || 0;
     const card = document.createElement("div");
     card.className = "book";
+    card.dataset.id = b.id;
+    if(r===10 && editing!==b.id) card.classList.add("masterpiece");
     if(editing===b.id && own){
       card.classList.add("editing");
       const pct = (r/10)*100;
@@ -480,7 +703,7 @@ function render(){
             '<span class="val ef-rate-val '+(r?'':'unset')+'">'+(r? r+'<span class="m">/10</span>' : 'нет')+'</span>'+
           '</label>'+
           '<div class="acts">'+
-            '<button class="btn ef-save">Сохранить</button>'+
+            '<button class="btn primary ef-save">Сохранить</button>'+
             '<button class="btn ghost ef-cancel">Отмена</button>'+
           '</div>'+
         '</div>';
@@ -615,7 +838,7 @@ function renderAuthors(){
             '<span class="af-val val '+(val?'':'unset')+'">'+val.toFixed(1)+'<span class="m">/10</span></span>'+
           '</label>'+
           '<div class="acts">'+
-            '<button class="btn af-save">Сохранить</button>'+
+            '<button class="btn primary af-save">Сохранить</button>'+
             '<button class="btn ghost af-auto">↺ Авто</button>'+
             '<button class="btn ghost af-cancel">Отмена</button>'+
           '</div>'+
@@ -715,7 +938,7 @@ document.getElementById("resetAll").addEventListener("click",()=>{
 let fileHandle = null;
 
 function currentBaked(){
-  return {ratings:state.ratings, custom:state.custom, deleted:state.deleted, edits:state.edits, authorEdits:state.authorEdits||{}, updated:Date.now()};
+  return {ratings:state.ratings, custom:state.custom, deleted:state.deleted, edits:state.edits, authorEdits:state.authorEdits||{}, reading:state.reading||[], updated:Date.now()};
 }
 function buildHtml(){
   const wasEditing = editing; editing = null; render();
@@ -806,7 +1029,7 @@ let syncToken = "", syncGistId = "", pushTimer = null;
 
 function syncConnected(){ return !!syncToken; }
 function setSyncStatus(m){ const el=document.getElementById("syncStatus"); if(el) el.textContent=m; }
-function stateForSync(){ return {ratings:state.ratings, custom:state.custom, deleted:state.deleted, edits:state.edits, authorEdits:state.authorEdits||{}, updated:state.updated||0}; }
+function stateForSync(){ return {ratings:state.ratings, custom:state.custom, deleted:state.deleted, edits:state.edits, authorEdits:state.authorEdits||{}, reading:state.reading||[], updated:state.updated||0}; }
 
 async function ghFetch(url, opts){
   opts = opts || {};
@@ -954,6 +1177,81 @@ function makeIcon(){
 searchEl.addEventListener("input",render);
 sortEl.addEventListener("change",render);
 document.getElementById("sortAuthors").addEventListener("change",render);
+
+// ---- Сейчас читаю ----
+function fmtDay(ts){ try{ return new Date(ts).toLocaleDateString("ru-RU",{day:"numeric",month:"long"}); }catch(e){ return ""; } }
+const READ_ICON = '<svg viewBox="0 0 24 24"><path d="M12 6c-1.7-1.1-4.2-1.6-6.5-1.6V17c2.3 0 4.8.5 6.5 1.6 1.7-1.1 4.2-1.6 6.5-1.6V4.4c-2.3 0-4.8.5-6.5 1.6z"/><path d="M12 6v12.6"/></svg>';
+function renderReading(){
+  const sec = document.getElementById("readingSec"); if(!sec) return;
+  const own = isOwner(); const list = state.reading || [];
+  sec.style.display = view==="books" ? "" : "none";
+  document.getElementById("readingAddToggle").style.display = own ? "" : "none";
+  if(!own){ document.getElementById("readingAdd").classList.remove("open"); finishing = null; }
+  const el = document.getElementById("readingList");
+  if(!list.length){ el.innerHTML = '<div class="reading-empty">'+(own ? 'Сейчас ничего не читаю. Нажми «+ Начать книгу», когда возьмёшься за новую.' : 'Сейчас ничего не читаю.')+'</div>'; return; }
+  el.innerHTML = list.map(r=>{
+    const id = escapeHtml(r.id); const fin = own && finishing===r.id;
+    return '<div class="rcard">'+
+      '<div class="rc-icon">'+READ_ICON+'</div>'+
+      '<div class="meta"><div class="title">'+escapeHtml(r.t)+(r.eng?'<span class="lang-tag">ENG</span>':'')+'</div>'+
+      '<div class="author">'+escapeHtml(r.a)+(r.started?' · читаю с '+fmtDay(r.started):'')+'</div></div>'+
+      (own && !fin ? '<div class="rc-acts"><button class="btn primary small" data-rfin="'+id+'">✓ Прочитано</button><button class="icon-btn del" title="Убрать" data-rdel="'+id+'">×</button></div>' : '')+
+      (fin ? '<div class="rc-finish">'+
+        '<label class="rate-edit"><span class="re-lbl">Оценка</span>'+
+          '<input type="range" min="0" max="10" step="1" value="0" class="af-range rf-rate" style="--p:0%;--gc:var(--line2)">'+
+          '<span class="val rf-val unset">нет</span></label>'+
+        '<div class="acts"><button class="btn primary" data-rconfirm="'+id+'">Добавить в прочитанное</button><button class="btn ghost" data-rback="1">Отмена</button></div>'+
+      '</div>' : '')+
+    '</div>';
+  }).join("");
+  el.querySelectorAll("[data-rfin]").forEach(b=> b.addEventListener("click", e=>{ finishing = e.currentTarget.dataset.rfin; renderReading(); }));
+  el.querySelectorAll("[data-rback]").forEach(b=> b.addEventListener("click", ()=>{ finishing = null; renderReading(); }));
+  el.querySelectorAll("[data-rdel]").forEach(b=> b.addEventListener("click", e=>{
+    const id = e.currentTarget.dataset.rdel;
+    if(confirm("Убрать эту книгу из «Сейчас читаю»?")){ state.reading = state.reading.filter(x=>x.id!==id); saveState(state); renderReading(); toast("Убрано"); }
+  }));
+  el.querySelectorAll(".rf-rate").forEach(inp=> inp.addEventListener("input", e=>{
+    const v = +e.target.value;
+    e.target.style.setProperty("--p", (v*10)+"%"); e.target.style.setProperty("--gc", goldTier(v));
+    const lab = e.target.parentElement.querySelector(".rf-val");
+    lab.className = "val rf-val "+(v?"":"unset"); lab.innerHTML = v? v+'<span class="m">/10</span>' : "нет";
+  }));
+  el.querySelectorAll("[data-rconfirm]").forEach(b=> b.addEventListener("click", e=>{
+    const r = state.reading.find(x=>x.id===e.currentTarget.dataset.rconfirm); if(!r) return;
+    const rng = el.querySelector(".rf-rate");
+    finishReading(r, rng ? Math.round(+rng.value) : 0);
+  }));
+}
+function finishReading(r, v){
+  const b = {t:r.t, a:r.a||"—", eng:!!r.eng}; b.id = idOf(b);
+  if(allBooks().some(x=>x.id===b.id)) b.id += "_"+Date.now();
+  state.custom.push(b);
+  state.deleted = state.deleted.filter(d=>d!==b.id);
+  if(v) state.ratings[b.id] = v;
+  state.reading = state.reading.filter(x=>x.id!==r.id);
+  finishing = null; saveState(state); render();
+  const card = Array.from(listEl.querySelectorAll(".book")).find(c=>c.dataset.id===b.id);
+  if(card){ card.classList.add("just-added"); card.scrollIntoView({behavior:"smooth", block:"center"}); }
+  toast("Добавлено в прочитанное ✓");
+}
+const rdAdd = document.getElementById("readingAdd");
+document.getElementById("readingAddToggle").addEventListener("click", ()=>{
+  rdAdd.classList.toggle("open");
+  if(rdAdd.classList.contains("open")) document.getElementById("rdTitle").focus();
+});
+document.getElementById("rdCancel").addEventListener("click", ()=> rdAdd.classList.remove("open"));
+document.getElementById("rdSave").addEventListener("click", ()=>{
+  if(!isOwner()) return;
+  const t = document.getElementById("rdTitle").value.trim();
+  const a = document.getElementById("rdAuthor").value.trim();
+  const eng = document.getElementById("rdEng").checked;
+  if(!t){ alert("Введите название"); return; }
+  state.reading = state.reading || [];
+  state.reading.push({id:"r_"+Date.now(), t, a:a||"—", eng, started:Date.now()});
+  saveState(state);
+  document.getElementById("rdTitle").value = ""; document.getElementById("rdAuthor").value = ""; document.getElementById("rdEng").checked = false;
+  rdAdd.classList.remove("open"); renderReading(); toast("Добавлено в «Сейчас читаю»");
+});
 
 markDirty(false);
 makeIcon();
