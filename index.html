@@ -27,7 +27,7 @@
   html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
   body{background:radial-gradient(120% 80% at 50% -10%,#fbf7ee 0%,var(--bg) 42%,var(--bg2) 100%) fixed;color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;min-height:100vh;
     padding:env(safe-area-inset-top) env(safe-area-inset-right) calc(120px + env(safe-area-inset-bottom)) env(safe-area-inset-left)}
-  body::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;z-index:20;background:linear-gradient(90deg,var(--gold-d),var(--gold-hi) 35%,#e6cf87 50%,var(--gold-hi) 65%,var(--gold-d));box-shadow:0 1px 4px rgba(150,110,50,.35)}
+  body::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;z-index:20;background:linear-gradient(90deg,var(--gold-d),var(--gold-hi) 35%,#e6cf87 50%,var(--gold-hi) 65%,var(--gold-d));box-shadow:0 1px 4px rgba(150,110,50,.35)}
   .ribbon{position:fixed;top:0;right:clamp(16px,5vw,40px);width:24px;height:56px;z-index:19;background:linear-gradient(180deg,var(--gold-hi),var(--gold) 55%,var(--gold-d));clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%);box-shadow:0 3px 8px rgba(120,90,40,.34);animation:ribbonDrop .7s var(--ease) both}
   .ribbon::after{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:1px;height:26px;background:rgba(255,255,255,.4)}
   @keyframes ribbonDrop{from{transform:translateY(-56px)}to{transform:translateY(0)}}
@@ -408,7 +408,7 @@
       <option value="rating-asc">Оценка ↑</option>
     </select>
     <button class="btn primary" id="addToggle">+ Добавить</button>
-    <button class="btn ghost" id="syncToggle">☁ Синхронизация<span id="syncBadge" style="display:none;color:#3a7d3a;margin-left:6px">●</span></button>
+    <button class="btn ghost" id="syncToggle">Синхронизация<span id="syncBadge" style="display:none;color:#3a7d3a;margin-left:6px">●</span></button>
     <div class="more-wrap">
       <button class="btn ghost more-toggle" id="moreToggle" title="Ещё" aria-label="Ещё">⋯</button>
       <div class="more-menu" id="moreMenu">
@@ -462,7 +462,7 @@
 
   <footer>
     Оценки и правки сохраняются в этом браузере автоматически.<br>
-    Подключи «☁ Синхронизацию», чтобы оценки сами переносились между айфоном и Маком.<br>
+    Подключи «Синхронизацию», чтобы оценки сами переносились между айфоном и Маком.<br>
     <span class="reset" id="resetAll">Сбросить все оценки и вернуть исходный список</span>
   </footer>
 </div>
