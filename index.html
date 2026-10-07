@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru"><head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Моя библиотека</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -472,6 +472,17 @@
     50%{scale:1.012;box-shadow:var(--card-sh),0 0 0 4px rgba(169,144,98,.16),0 16px 36px -12px rgba(110,85,40,.34)}
   }
   @media(prefers-reduced-motion:reduce){.rcard{animation:none}}
+
+  /* ===== v7: кнопки форм без обрезки, поля 16px (без автоприближения), без двойного тапа ===== */
+  html,body{touch-action:manipulation}
+  @media(max-width:560px){
+    .edit-form .acts .btn,.rc-finish .acts .btn,.add-panel .acts .btn,.reading-add .acts .btn{height:auto;min-height:46px;white-space:normal;line-height:1.25;text-align:center;padding:11px 16px}
+    #syncPanel .acts{flex-direction:column}
+    #syncPanel .acts .btn{flex:none;width:100%}
+  }
+  @media(pointer:coarse){
+    input[type=search],input[type=text],input[type=url],textarea{font-size:16px!important}
+  }
 </style>
 </head>
 <body>
@@ -583,11 +594,6 @@
 
   <div id="list"></div>
 
-  <footer>
-    Оценки и правки сохраняются в этом браузере автоматически.<br>
-    Подключи «Синхронизацию», чтобы оценки сами переносились между айфоном и Маком.<br>
-    <span class="reset" id="resetAll">Сбросить все оценки и вернуть исходный список</span>
-  </footer>
 </div>
 
 <div class="bottombar">
@@ -1074,17 +1080,6 @@ document.getElementById("saveBook").addEventListener("click",()=>{
   toast("Книга добавлена");
 });
 
-document.getElementById("resetAll").addEventListener("click",()=>{
-  if(confirm("Сбросить все оценки, правки и добавленные книги? Список вернётся к исходному.")){
-    lsDel();
-    state = normalize({});
-    state.mig1 = true;
-    editing = null;
-    render();
-    toast("Список сброшен");
-  }
-});
-
 // ---- Сохранение / экспорт / импорт ----
 let fileHandle = null;
 
@@ -1403,6 +1398,9 @@ document.getElementById("rdSave").addEventListener("click", ()=>{
   document.getElementById("rdTitle").value = ""; document.getElementById("rdAuthor").value = ""; document.getElementById("rdEng").checked = false;
   rdAdd.classList.remove("open"); renderReading(); toast("Добавлено в «Сейчас читаю»");
 });
+
+// ---- Как приложение: масштаб страницы не меняется ----
+["gesturestart","gesturechange","gestureend"].forEach(ev=> document.addEventListener(ev, e=> e.preventDefault(), {passive:false}));
 
 markDirty(false);
 makeIcon();
